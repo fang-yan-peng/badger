@@ -138,7 +138,6 @@ public class JdbcSelectHelper {
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
         ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList);
         List<String> dynamicFields = shardResult.getDynamicFields();
-        StringBuilder stringBuilder = new StringBuilder();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         String sql = tableName == null ? dialect.countSql(clazz, condition) : dialect.countSql(clazz, tableName, condition);
