@@ -1,0 +1,18 @@
+*.class
+
+.project
+.classpath
+.settings
+target
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+.idea
+*.iml
+
+.DS_Store
+
+Maven_*.xml
