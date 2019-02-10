@@ -180,4 +180,12 @@ public class Badger extends Config {
     public <T> SQLQuery<? extends T> createSqlQuery(Class<T> clazz, String sql) {
         return new SQLQueryImpl<>(sql, this, clazz);
     }
+
+    /**
+     * todo
+     * 动态刷新数据源
+     */
+    public void refreshDataSourceFactory() {
+
+    }
 }

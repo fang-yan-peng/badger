@@ -1,7 +1,5 @@
 package org.jfaster.badger.util;
 
-import static org.jfaster.badger.util.CheckConditions.checkNotNull;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +37,9 @@ public class SqlUtils {
 
     public static ShardTableInfo getShardTableInfo(Class<?> clazz) {
         ShardTableInfo tableInfo = getClassInfo(clazz).getShardTableInfo();
+/*
         checkNotNull(tableInfo.getColumn(), "annotated @ShardTable should annotated @ShardColumn");
+*/
         return tableInfo;
     }
 

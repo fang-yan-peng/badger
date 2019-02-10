@@ -27,6 +27,6 @@ public interface DeleteStatement {
 	 * @return
 	 * @throws Exception
 	 */
-	int executeDelete() throws Exception;
+	int execute() throws Exception;
 
 }

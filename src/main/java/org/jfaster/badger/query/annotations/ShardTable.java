@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 import org.jfaster.badger.jdbc.datasource.support.AbstractDataSourceFactory;
 import org.jfaster.badger.query.shard.DataSourceShardStrategy;
 import org.jfaster.badger.query.shard.NotShardStrategy;
-import org.jfaster.badger.query.shard.ShardType;
 import org.jfaster.badger.query.shard.TableShardStrategy;
 
 /**
@@ -17,13 +16,13 @@ import org.jfaster.badger.query.shard.TableShardStrategy;
  * @author yanpengfang
  * @create 2019-01-04 9:10 PM
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ShardTable {
     String[] tables();
 
-    ShardType shardType();
+    /*ShardType shardType();*/
 
     Class<? extends TableShardStrategy> tableShardStrategy() default NotShardStrategy.class;
 

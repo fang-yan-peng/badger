@@ -65,6 +65,8 @@ public class ClassInfo {
             String tableName = table.tableName();
             if (Strings.isNullOrEmpty(tableName)) {
                 tableInfo.setTableName(Strings.underscoreName(clz.getSimpleName()));
+            } else {
+                tableInfo.setTableName(tableName);
             }
             tableInfo.setDataSourceName(table.dataSourceName());
             return tableInfo;
@@ -104,7 +106,7 @@ public class ClassInfo {
                 if (dbStrategy != NotShardStrategy.class) {
                     tableInfo.setDbShardStrategy(dbStrategy.newInstance());
                 }
-                tableInfo.setShardType(shardTable.shardType());
+                /*tableInfo.setShardType(shardTable.shardType());*/
                 return tableInfo;
             }
         } catch (InstantiationException | IllegalAccessException e) {

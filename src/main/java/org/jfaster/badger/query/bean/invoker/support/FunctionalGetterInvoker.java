@@ -59,4 +59,9 @@ public class FunctionalGetterInvoker implements GetterInvoker {
         return rawType;
     }
 
+    @Override
+    public TypeConverter getConverter() {
+        return function;
+    }
+
 }

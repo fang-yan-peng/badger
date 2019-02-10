@@ -58,7 +58,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
-    public int executeDelete() throws Exception {
+    public int execute() throws Exception {
         return JdbcDeleteHelper.deleteByCondition(clazz, condition, paramList, badger);
     }
 }

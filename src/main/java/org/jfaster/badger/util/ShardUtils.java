@@ -57,10 +57,10 @@ public class ShardUtils {
 
     public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters) throws IOException {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
-        ParseResult parseResult = SQLParseUtils.parse(clazz, condition);
-        List<String> parseFields = parseResult.getDynamicFields();
-        List<String> dynamicFields = new ArrayList<>(parseFields.size());
-        dynamicFields.addAll(parseFields);
+        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition);
+        List<String> conditionFileds = conditionParse.getDynamicFields();
+        List<String> dynamicFields = new ArrayList<>(conditionFileds.size());
+        dynamicFields.addAll(conditionFileds);
         int parameterCount = parameters == null ? 0 : parameters.size();
         if (parameterCount != dynamicFields.size()) {
             throw new MappingException("condition:" + condition + " not match parameters:" + (parameterCount == 0 ? "none" : Joiner.on(",").join(parameters)));
@@ -72,8 +72,8 @@ public class ShardUtils {
             res.setDataSourceName(tableInfo.getDataSourceName());
             return res;
         }
-        int shardIndex = parseResult.getShardParameterIndex();
-        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex)) : parseResult.getShardValue();
+        int shardIndex = conditionParse.getShardParameterIndex();
+        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex)) : conditionParse.getShardValue();
         CheckConditions.checkNotNull(shardValue, "分库分表字段不能为null");
         return shard(shardValue, shardInfo, res);
     }
@@ -101,15 +101,15 @@ public class ShardUtils {
     public static ShardResult shard(Class<?> clazz, String updateStatement, String condition,
             List<Object> parameters) throws IOException {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
-        ParseResult parseResult = SQLParseUtils.parse(clazz, condition);
-        ParseResult updateParseResult = SQLParseUtils.parseUpdateStatment(clazz, updateStatement);
+        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition);
+        ParseResult updateParse = SQLParseUtils.parseUpdateStatment(clazz, updateStatement);
 
-        List<String> parseFields = parseResult.getDynamicFields();
-        List<String> parseUpdateFields = updateParseResult.getDynamicFields();
+        List<String> conditionFields = conditionParse.getDynamicFields();
+        List<String> updateFields = updateParse.getDynamicFields();
 
-        List<String> dynamicFields = new ArrayList<>(parseFields.size() + parseUpdateFields.size());
-        dynamicFields.addAll(parseUpdateFields);
-        dynamicFields.addAll(parseFields);
+        List<String> dynamicFields = new ArrayList<>(conditionFields.size() + updateFields.size());
+        dynamicFields.addAll(updateFields);
+        dynamicFields.addAll(conditionFields);
 
         int parameterCount = parameters == null ? 0 : parameters.size();
         if (parameterCount != dynamicFields.size()) {
@@ -122,8 +122,8 @@ public class ShardUtils {
             res.setDataSourceName(tableInfo.getDataSourceName());
             return res;
         }
-        int shardIndex = parseResult.getShardParameterIndex();
-        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex + parseUpdateFields.size())) : parseResult.getShardValue();
+        int shardIndex = conditionParse.getShardParameterIndex();
+        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex + updateFields.size())) : conditionParse.getShardValue();
         CheckConditions.checkNotNull(shardValue, "分库分表字段不能为null");
         return shard(shardValue, shardInfo, res);
     }

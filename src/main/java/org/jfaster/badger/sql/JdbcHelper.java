@@ -15,6 +15,7 @@ import org.jfaster.badger.exception.MappingException;
 import org.jfaster.badger.jdbc.extractor.ResultSetExtractor;
 import org.jfaster.badger.jdbc.type.TypeHandler;
 import org.jfaster.badger.jdbc.type.TypeHandlerRegistry;
+import org.jfaster.badger.jdbc.type.convert.TypeConverter;
 import org.jfaster.badger.query.bean.invoker.GetterInvoker;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
 import org.jfaster.badger.sql.update.JdbcUpdateHelper;
@@ -230,7 +231,15 @@ public class JdbcHelper {
             if (invoker == null) {
                 throw new MappingException("%s 没有setter getter方法", dynamicFields.get(i));
             }
-            TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(invoker.getRawType());
+            TypeConverter converter = invoker.getConverter();
+            Class<?> paramType;
+            if (converter != null) {
+                param = converter.convert(param);
+                paramType = param.getClass();
+            } else {
+                paramType = invoker.getRawType();
+            }
+            TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(paramType);
             typeHandler.setParameter(ps, i + 1, param);
         }
     }
