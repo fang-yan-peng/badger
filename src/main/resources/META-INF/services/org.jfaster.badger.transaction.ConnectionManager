@@ -1,2 +1,1 @@
 org.jfaster.badger.transaction.BadgerConnectionManager
-org.jfaster.badger.transaction.SpringConnectionManager
