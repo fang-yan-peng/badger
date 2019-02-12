@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.jfaster.badger.Badger;
 import org.jfaster.badger.exception.MappingException;
 import org.jfaster.badger.sql.delete.DeleteStatement;
+import org.jfaster.badger.sql.interceptor.SqlInterceptor;
 import org.jfaster.badger.sql.select.Query;
 import org.jfaster.badger.sql.select.SQLQuery;
 import org.jfaster.badger.sql.update.UpdateSqlStatement;
@@ -17,6 +18,7 @@ import org.jfaster.badger.test.entity.DriverExt;
 import org.jfaster.badger.test.entity.DriverOrder;
 import org.jfaster.badger.test.entity.Order;
 import org.jfaster.badger.test.entity.TypeEnum;
+import org.jfaster.badger.transaction.TransactionTemplate;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,6 +49,25 @@ public class DbTest {
         HikariDataSource dataSource = new HikariDataSource(config);
 
         badger = Badger.newInstance(dataSource);
+        badger.setInterceptor(new SqlInterceptor() {
+
+            @Override
+            public void before(String sql) {
+                System.out.println("sql:" + sql + " begin to execute");
+                SqlInterceptor.put("startTime", System.currentTimeMillis());
+            }
+
+            @Override
+            public void after(String sql) {
+                long startTime = SqlInterceptor.get("startTime", Long.class);
+                System.out.println("sql:" + sql + " execute success, execute time:" + (System.currentTimeMillis() - startTime));
+            }
+
+            @Override
+            public void error(String sql, Throwable e) {
+                System.out.println("sql:" + sql + " execute fail " + e.getMessage());
+            }
+        });
     }
 
     /**
@@ -213,5 +234,17 @@ public class DbTest {
         query.addParam(13);
         List<DriverOrder> driverOrders = query.list();
         System.out.println(driverOrders);
+    }
+
+    /**
+     * badger事务
+     */
+    @Test(expected = MappingException.class)
+    public void transactionTest() {
+        TransactionTemplate.execute(status -> {
+            badger.delete(Driver.class, 13);
+            //分库分表字段不是id则抛异常
+            badger.delete(Order.class, "P224378961549867525895");
+        });
     }
 }

@@ -19,6 +19,7 @@ import org.jfaster.badger.jdbc.type.convert.TypeConverter;
 import org.jfaster.badger.query.bean.invoker.GetterInvoker;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
 import org.jfaster.badger.sql.update.JdbcUpdateHelper;
+import org.jfaster.badger.transaction.DataSourceUtils;
 import org.jfaster.badger.util.ExceptionUtils;
 import org.jfaster.badger.util.JdbcUtils;
 import org.jfaster.badger.util.SqlUtils;
@@ -35,13 +36,12 @@ public class JdbcHelper {
     private final static Logger logger = LoggerFactory.getLogger(JdbcUpdateHelper.class);
 
     public static <T> int executeUpdate(Badger badger, Class<T> clazz,
-            List<String> dynamicFields, String dbName, List<Object> parameters, String sql, boolean convert)
-            throws Exception {
+            List<String> dynamicFields, String dbName, List<Object> parameters, String sql, boolean convert) {
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         int res;
         DataSource dataSource = badger.getMasterDataSource(dbName);
-        Connection conn = dataSource.getConnection();
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         Statement st = null;
         try {
@@ -71,7 +71,7 @@ public class JdbcHelper {
             }
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, hasInterceptor, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, ps, st);
         }
         return res;
     }
@@ -81,7 +81,7 @@ public class JdbcHelper {
         boolean hasInterceptor = interceptor != null;
         int res;
         DataSource dataSource = badger.getMasterDataSource(dbName);
-        Connection conn = dataSource.getConnection();
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         Statement st = null;
         try {
@@ -111,7 +111,7 @@ public class JdbcHelper {
             }
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, hasInterceptor, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, ps, st);
         }
         return res;
     }
@@ -120,7 +120,7 @@ public class JdbcHelper {
             String dbName, List<Object> parameters, String sql,
             ResultSetExtractor<O> extractor, boolean useMaster, boolean convert) throws Exception {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
-        Connection conn = dataSource.getConnection();
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         ResultSet rs = null;
@@ -155,7 +155,7 @@ public class JdbcHelper {
             logger.error(str, e);
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, hasInterceptor, rs, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, rs, ps, st);
         }
         return res;
     }
@@ -163,7 +163,7 @@ public class JdbcHelper {
     public static <O> O executeQuery(Badger badger, String dbName, List<Object> parameters, String sql,
             ResultSetExtractor<O> extractor, boolean useMaster) throws Exception {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
-        Connection conn = dataSource.getConnection();
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         ResultSet rs = null;
@@ -198,25 +198,31 @@ public class JdbcHelper {
             logger.error(str, e);
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, hasInterceptor, rs, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, rs, ps, st);
         }
         return res;
     }
 
-    private static void closeResource(Connection conn, boolean hasInterceptor, ResultSet rs, PreparedStatement ps, Statement st) {
+    private static void closeResource(Connection conn, DataSource dataSource,
+            boolean hasInterceptor,
+            ResultSet rs,
+            PreparedStatement ps, Statement st) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(ps);
         JdbcUtils.closeStatement(st);
-        JdbcUtils.closeConnection(conn);
+        DataSourceUtils.releaseConnection(conn, dataSource);
         if (hasInterceptor) {
             SqlInterceptor.clear();
         }
     }
 
-    private static void closeResource(Connection conn, boolean hasInterceptor, PreparedStatement ps, Statement st) {
+    private static void closeResource(Connection conn, DataSource dataSource,
+            boolean hasInterceptor,
+            PreparedStatement ps,
+            Statement st) {
         JdbcUtils.closeStatement(ps);
         JdbcUtils.closeStatement(st);
-        JdbcUtils.closeConnection(conn);
+        DataSourceUtils.releaseConnection(conn, dataSource);
         if (hasInterceptor) {
             SqlInterceptor.clear();
         }

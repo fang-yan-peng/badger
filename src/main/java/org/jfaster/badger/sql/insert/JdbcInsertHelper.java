@@ -18,6 +18,7 @@ import org.jfaster.badger.query.shard.ShardResult;
 import org.jfaster.badger.spi.ExtensionLoader;
 import org.jfaster.badger.sql.UpdateOpTransfer;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
+import org.jfaster.badger.transaction.DataSourceUtils;
 import org.jfaster.badger.util.ExceptionUtils;
 import org.jfaster.badger.util.JdbcUtils;
 import org.jfaster.badger.util.Joiner;
@@ -73,7 +74,7 @@ public class JdbcInsertHelper {
         boolean hasPk = sqlRs.isHasPk();
         List<Object> values = sqlRs.getValues();
         DataSource dataSource = badger.getMasterDataSource(dbName);
-        Connection conn = null;
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
@@ -139,7 +140,7 @@ public class JdbcInsertHelper {
         } finally {
             JdbcUtils.closeResultSet(rs);
             JdbcUtils.closeStatement(ps);
-            JdbcUtils.closeConnection(conn);
+            DataSourceUtils.releaseConnection(conn, dataSource);
             if (hasInterceptor) {
                 SqlInterceptor.clear();
             }

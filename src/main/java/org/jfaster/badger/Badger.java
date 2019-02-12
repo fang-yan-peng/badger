@@ -1,6 +1,8 @@
 package org.jfaster.badger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,6 +123,11 @@ public class Badger extends Config {
         Badger badger = new Badger();
         instances.add(badger);
         return badger;
+    }
+
+    public static List<Badger> getInstances() {
+        List<Badger> badgers = new ArrayList<>(instances);
+        return Collections.unmodifiableList(badgers);
     }
 
     /**********************************db 操作**************************************/
