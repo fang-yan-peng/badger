@@ -40,6 +40,7 @@ public class JdbcGetHelper {
         String sql = tableName == null ? dialect.getSql(clazz) : dialect.getSql(clazz, tableName);
         return JdbcHelper.executeQuery(badger, clazz, SqlUtils.getIdFields(clazz),
                 dbName, Collections.singletonList(id), sql,
-                new ObjectResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster);
+                new ObjectResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)),
+                useMaster, true);
     }
 }

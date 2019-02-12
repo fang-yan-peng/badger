@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jfaster.badger.Badger;
 import org.jfaster.badger.exception.MappingException;
 import org.jfaster.badger.query.shard.DataSourceShardStrategy;
 import org.jfaster.badger.query.shard.ShardResult;
@@ -55,12 +56,13 @@ public class ShardUtils {
         return shard(shardValue, shardInfo, res);
     }
 
-    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters) throws IOException {
+    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters, Badger badger)
+            throws IOException {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
-        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition);
-        List<String> conditionFileds = conditionParse.getDynamicFields();
-        List<String> dynamicFields = new ArrayList<>(conditionFileds.size());
-        dynamicFields.addAll(conditionFileds);
+        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
+        List<String> conditionFields = conditionParse.getDynamicFields();
+        List<String> dynamicFields = new ArrayList<>(conditionFields.size());
+        dynamicFields.addAll(conditionFields);
         int parameterCount = parameters == null ? 0 : parameters.size();
         if (parameterCount != dynamicFields.size()) {
             throw new MappingException("condition:" + condition + " not match parameters:" + (parameterCount == 0 ? "none" : Joiner.on(",").join(parameters)));
@@ -78,31 +80,11 @@ public class ShardUtils {
         return shard(shardValue, shardInfo, res);
     }
 
-    @SuppressWarnings("ALL")
-    private static ShardResult shard(Object shardValue, ShardTableInfo shardInfo, ShardResult res) {
-        CheckConditions.checkNotNull(shardValue, "分库分表字段不能为null");
-        DataSourceShardStrategy dataSourceShardStrategy = shardInfo.getDbShardStrategy();
-        if (dataSourceShardStrategy != null) {
-            String dbName = dataSourceShardStrategy.shardSingle(shardValue);
-            CheckConditions.checkNotNull(dbName, "分库不能为空");
-        } else {
-            res.setDataSourceName(shardInfo.getDatasourceName());
-        }
-        TableShardStrategy tableShardStrategy = shardInfo.getTableShardStrategy();
-        if (tableShardStrategy != null) {
-            String tableName = tableShardStrategy.shardSingle(shardInfo.getTalbes(), shardValue);
-            CheckConditions.checkNotNull(tableName, "分表名不能为空");
-            res.setTableName(tableName);
-        }
-        return res;
-    }
-
-
     public static ShardResult shard(Class<?> clazz, String updateStatement, String condition,
-            List<Object> parameters) throws IOException {
+            List<Object> parameters, Badger badger) throws IOException {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
-        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition);
-        ParseResult updateParse = SQLParseUtils.parseUpdateStatment(clazz, updateStatement);
+        ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
+        ParseResult updateParse = SQLParseUtils.parseUpdateStatement(clazz, updateStatement, badger);
 
         List<String> conditionFields = conditionParse.getDynamicFields();
         List<String> updateFields = updateParse.getDynamicFields();
@@ -126,5 +108,24 @@ public class ShardUtils {
         Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex + updateFields.size())) : conditionParse.getShardValue();
         CheckConditions.checkNotNull(shardValue, "分库分表字段不能为null");
         return shard(shardValue, shardInfo, res);
+    }
+
+    @SuppressWarnings("ALL")
+    private static ShardResult shard(Object shardValue, ShardTableInfo shardInfo, ShardResult res) {
+        CheckConditions.checkNotNull(shardValue, "分库分表字段不能为null");
+        DataSourceShardStrategy dataSourceShardStrategy = shardInfo.getDbShardStrategy();
+        if (dataSourceShardStrategy != null) {
+            String dbName = dataSourceShardStrategy.shardSingle(shardValue);
+            CheckConditions.checkNotNull(dbName, "分库不能为空");
+        } else {
+            res.setDataSourceName(shardInfo.getDatasourceName());
+        }
+        TableShardStrategy tableShardStrategy = shardInfo.getTableShardStrategy();
+        if (tableShardStrategy != null) {
+            String tableName = tableShardStrategy.shardSingle(shardInfo.getTalbes(), shardValue);
+            CheckConditions.checkNotNull(tableName, "分表名不能为空");
+            res.setTableName(tableName);
+        }
+        return res;
     }
 }

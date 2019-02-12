@@ -1,8 +1,5 @@
 package org.jfaster.badger.query.bean;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -137,6 +134,7 @@ public class BeanUtil {
             return null;
         }
     }
+
     private static List<PropertyMeta> transToList(TreeMap<Integer, PropertyMeta> metaMap) {
         List<PropertyMeta> metas = new ArrayList<>();
         for (Integer key : metaMap.keySet()) {

@@ -33,7 +33,8 @@ public class JdbcDeleteHelper {
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         String sql = tableName == null ? dialect.deleteEntitySql(clazz) : dialect.deleteEntitySql(clazz, tableName);
-        return JdbcHelper.executeUpdate(badger, clazz, SqlUtils.getIdFields(clazz), dbName, Collections.singletonList(id), sql);
+        return JdbcHelper.executeUpdate(badger, clazz, SqlUtils.getIdFields(clazz), dbName,
+                Collections.singletonList(id), sql, true);
     }
 
     /**
@@ -48,11 +49,11 @@ public class JdbcDeleteHelper {
     public static <T> int deleteByCondition(Class<T> clazz, String condition, List<Object> parameters, Badger badger) throws Exception {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, parameters);
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, parameters, badger);
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         List<String> dynamicFields = shardResult.getDynamicFields();
         String sql = tableName == null ? dialect.deleteConditionSql(clazz, condition) : dialect.deleteConditionSql(clazz, condition, tableName);
-        return JdbcHelper.executeUpdate(badger, clazz, dynamicFields, dbName, parameters, sql);
+        return JdbcHelper.executeUpdate(badger, clazz, dynamicFields, dbName, parameters, sql, true);
     }
 }

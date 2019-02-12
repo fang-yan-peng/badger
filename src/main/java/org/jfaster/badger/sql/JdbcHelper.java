@@ -34,7 +34,8 @@ public class JdbcHelper {
 
     private final static Logger logger = LoggerFactory.getLogger(JdbcUpdateHelper.class);
 
-    public static <T> int executeUpdate(Badger badger, Class<T> clazz, List<String> dynamicFields, String dbName, List<Object> parameters, String sql)
+    public static <T> int executeUpdate(Badger badger, Class<T> clazz,
+            List<String> dynamicFields, String dbName, List<Object> parameters, String sql, boolean convert)
             throws Exception {
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
@@ -50,7 +51,7 @@ public class JdbcHelper {
             } else {
                 ps = conn.prepareStatement(sql);
                 ps.setQueryTimeout(badger.getUpdateTimeout());
-                setParameters(dynamicFields, clazz, parameters, ps);
+                setParameters(dynamicFields, clazz, parameters, ps, convert);
                 if (hasInterceptor) {
                     ExceptionUtils.runIgnoreThrowable(() -> interceptor.before(sql));
                 }
@@ -117,7 +118,7 @@ public class JdbcHelper {
 
     public static <T, O> O executeQuery(Badger badger, Class<T> clazz, List<String> dynamicFields,
             String dbName, List<Object> parameters, String sql,
-            ResultSetExtractor<O> extractor, boolean useMaster) throws Exception {
+            ResultSetExtractor<O> extractor, boolean useMaster, boolean convert) throws Exception {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
         Connection conn = dataSource.getConnection();
         SqlInterceptor interceptor = badger.getInterceptor();
@@ -133,7 +134,7 @@ public class JdbcHelper {
             } else {
                 ps = conn.prepareStatement(sql);
                 ps.setQueryTimeout(badger.getQueryTimeout());
-                setParameters(dynamicFields, clazz, parameters, ps);
+                setParameters(dynamicFields, clazz, parameters, ps, convert);
                 if (hasInterceptor) {
                     ExceptionUtils.runIgnoreThrowable(() -> interceptor.before(sql));
                 }
@@ -223,7 +224,7 @@ public class JdbcHelper {
 
     @SuppressWarnings("ALL")
     private static <T> void setParameters(List<String> dynamicFields, Class<T> clazz, List<Object>
-            parameters, PreparedStatement ps) throws SQLException {
+            parameters, PreparedStatement ps, boolean convert) throws SQLException {
         int size = dynamicFields.size();
         for (int i = 0; i < size; ++i) {
             Object param = parameters.get(i);
@@ -231,15 +232,13 @@ public class JdbcHelper {
             if (invoker == null) {
                 throw new MappingException("%s 没有setter getter方法", dynamicFields.get(i));
             }
-            TypeConverter converter = invoker.getConverter();
-            Class<?> paramType;
-            if (converter != null) {
-                param = converter.convert(param);
-                paramType = param.getClass();
-            } else {
-                paramType = invoker.getRawType();
+            if (convert) {
+                TypeConverter converter = invoker.getConverter();
+                if (converter != null) {
+                    param = converter.convert(param);
+                }
             }
-            TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(paramType);
+            TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(invoker.getJdbcType());
             typeHandler.setParameter(ps, i + 1, param);
         }
     }

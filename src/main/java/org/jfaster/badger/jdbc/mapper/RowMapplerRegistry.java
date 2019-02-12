@@ -1,6 +1,5 @@
 package org.jfaster.badger.jdbc.mapper;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jfaster.badger.jdbc.mapper.support.BeanPropertyRowMapper;

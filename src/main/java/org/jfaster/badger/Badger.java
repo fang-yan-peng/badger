@@ -169,15 +169,15 @@ public class Badger extends Config {
         return JdbcGetHelper.get(clazz, id, this, useMaster);
     }
 
-    public <T> Query<? extends T> createQuery(Class<T> clazz, String columns, String condition) {
+    public <T> Query<T> createQuery(Class<T> clazz, String columns, String condition) {
         return new QueryImpl<>(clazz, columns, condition, this);
     }
 
-    public <T> Query<? extends T> createQuery(Class<T> clazz, String condition) {
+    public <T> Query<T> createQuery(Class<T> clazz, String condition) {
         return new QueryImpl<>(clazz, condition, this);
     }
 
-    public <T> SQLQuery<? extends T> createSqlQuery(Class<T> clazz, String sql) {
+    public <T> SQLQuery<T> createSqlQuery(Class<T> clazz, String sql) {
         return new SQLQueryImpl<>(sql, this, clazz);
     }
 

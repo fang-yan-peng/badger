@@ -8,6 +8,8 @@ public interface GetterInvoker {
 
     Class<?> getRawType();
 
+    Class<?> getJdbcType();
+
     TypeConverter getConverter();
 
 }

@@ -26,5 +26,7 @@ public class Config {
 
     private boolean checkColumn = false;
 
+    private int cacheSqlLimit = 10000;
+
     private int pageSizeLimit = 200;
 }

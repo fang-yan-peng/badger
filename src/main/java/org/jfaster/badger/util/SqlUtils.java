@@ -1,11 +1,13 @@
 package org.jfaster.badger.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jfaster.badger.exception.BadgerException;
 import org.jfaster.badger.exception.MappingException;
+import org.jfaster.badger.query.annotations.Extension;
 import org.jfaster.badger.query.bean.invoker.GetterInvoker;
 import org.jfaster.badger.query.bean.invoker.SetterInvoker;
 import org.jfaster.badger.query.bean.invoker.support.InvokerCache;
@@ -26,6 +28,8 @@ public class SqlUtils {
 
     private static Map<Class<?>, List<String>> mapColumns = new ConcurrentHashMap<>();
 
+    private static Map<Class<?>, List<String>> mapFields = new ConcurrentHashMap<>();
+
     private static Map<Class<?>, SetterInvoker> idSetters = new ConcurrentHashMap<>();
 
     private static final Object lock = new Object();
@@ -36,11 +40,12 @@ public class SqlUtils {
     }
 
     public static ShardTableInfo getShardTableInfo(Class<?> clazz) {
-        ShardTableInfo tableInfo = getClassInfo(clazz).getShardTableInfo();
+        return getClassInfo(clazz).getShardTableInfo();
 /*
         checkNotNull(tableInfo.getColumn(), "annotated @ShardTable should annotated @ShardColumn");
-*/
+
         return tableInfo;
+        */
     }
 
     public static List<String> getAllColumns(Class<?> clazz) {
@@ -49,8 +54,11 @@ public class SqlUtils {
             return columns;
         }
         ClassInfo classInfo = getClassInfo(clazz);
-        columns = classInfo.getIdColumns();
-        columns.addAll(classInfo.getColumns());
+        List<String> idColumns = classInfo.getIdColumns();
+        List<String> otherColumns = classInfo.getColumns();
+        columns = new ArrayList<>(idColumns.size() + otherColumns.size());
+        columns.addAll(idColumns);
+        columns.addAll(otherColumns);
         mapColumns.put(clazz, columns);
         return columns;
     }
@@ -61,6 +69,21 @@ public class SqlUtils {
 
     public static List<String> getFields(Class<?> clazz) {
         return getClassInfo(clazz).getFields();
+    }
+
+    public static List<String> getAllFields(Class<?> clazz) {
+        List<String> fields = mapFields.get(clazz);
+        if (fields != null) {
+            return fields;
+        }
+        ClassInfo classInfo = getClassInfo(clazz);
+        List<String> idFields = classInfo.getIdFields();
+        List<String> otherFields = classInfo.getFields();
+        fields = new ArrayList<>(idFields.size() + otherFields.size());
+        fields.addAll(otherFields);
+        fields.addAll(idFields);
+        mapFields.put(clazz, fields);
+        return fields;
     }
 
 
@@ -158,6 +181,17 @@ public class SqlUtils {
     public static GetterInvoker getGetterInvoker(Class<?> clazz, String field) {
         GetterInvoker invoker = InvokerCache.getGetterInvoker(clazz, field);
         if (invoker == null) {
+            while (clazz.isAnnotationPresent(Extension.class)) {
+                Extension extension = clazz.getAnnotation(Extension.class);
+                Class<?> eClazz = extension.extend();
+                if (!eClazz.equals(Void.class)) {
+                    invoker = InvokerCache.getGetterInvoker(eClazz, field);
+                    if (invoker != null) {
+                        return invoker;
+                    }
+                }
+                clazz = eClazz;
+            }
             throw new MappingException(field + " getter method not fund");
         }
         return invoker;
@@ -166,7 +200,19 @@ public class SqlUtils {
     public static String getFieldByColumn(Class<?> clazz, String column) {
         String field = getClassInfo(clazz).getFieldByColumn(column);
         if (Strings.isNullOrEmpty(field)) {
+            while (clazz.isAnnotationPresent(Extension.class)) {
+                Extension extension = clazz.getAnnotation(Extension.class);
+                Class<?> eClazz = extension.extend();
+                if (!eClazz.equals(Void.class)) {
+                    field = getClassInfo(eClazz).getFieldByColumn(column);
+                    if (!Strings.isNullOrEmpty(field)) {
+                        return field;
+                    }
+                }
+                clazz = eClazz;
+            }
             throw new MappingException("column:" + column + " not match field of " + clazz.getName());
+
         }
         return field;
     }

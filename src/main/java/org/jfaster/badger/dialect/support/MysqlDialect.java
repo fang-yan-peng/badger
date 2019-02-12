@@ -69,8 +69,8 @@ public class MysqlDialect implements Dialect {
         List<Object> values = new ArrayList<>();
         for (String column : columns) {
             Object val = SqlUtils.getValueByColumn(t, column);
-            values.add(val);
             if (val != null) {
+                values.add(val);
                 if (!first) {
                     sbColumn.append(",");
                     sbValue.append(",");
@@ -85,6 +85,7 @@ public class MysqlDialect implements Dialect {
         sql.append(sbColumn);
         sql.append(") VALUES (");
         sql.append(sbValue);
+        sql.append(")");
         rs.setValues(values);
         rs.setSql(sql.toString());
         return rs;
@@ -182,7 +183,7 @@ public class MysqlDialect implements Dialect {
             sbColumn.append(",");
             sbValue.append(",");
             sbColumn.append("`");
-            sbColumn.append(columns.get(0));
+            sbColumn.append(columns.get(i));
             sbColumn.append("`");
             sbValue.append("?");
         }

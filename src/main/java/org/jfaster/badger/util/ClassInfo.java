@@ -12,6 +12,7 @@ import java.util.Set;
 import org.jfaster.badger.exception.BadgerException;
 import org.jfaster.badger.jdbc.datasource.support.AbstractDataSourceFactory;
 import org.jfaster.badger.query.annotations.Column;
+import org.jfaster.badger.query.annotations.Extension;
 import org.jfaster.badger.query.annotations.Id;
 import org.jfaster.badger.query.annotations.ShardColumn;
 import org.jfaster.badger.query.annotations.ShardTable;
@@ -70,6 +71,12 @@ public class ClassInfo {
             }
             tableInfo.setDataSourceName(table.dataSourceName());
             return tableInfo;
+        } else if (clz.isAnnotationPresent(Extension.class)) {
+            Extension extension = clz.getAnnotation(Extension.class);
+            Class<?> eClazz = extension.extend();
+            if (!eClazz.equals(Void.class)) {
+                return getTableInfo(eClazz);
+            }
         }
         tableInfo.setTableName(Strings.underscoreName(clz.getSimpleName()));
         tableInfo.setDataSourceName(AbstractDataSourceFactory.DEFULT_NAME);
@@ -108,6 +115,12 @@ public class ClassInfo {
                 }
                 /*tableInfo.setShardType(shardTable.shardType());*/
                 return tableInfo;
+            } else if (clz.isAnnotationPresent(Extension.class)) {
+                Extension extension = clz.getAnnotation(Extension.class);
+                Class<?> eClazz = extension.extend();
+                if (!eClazz.equals(Void.class)) {
+                    return getShardTable(eClazz);
+                }
             }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new BadgerException(e);

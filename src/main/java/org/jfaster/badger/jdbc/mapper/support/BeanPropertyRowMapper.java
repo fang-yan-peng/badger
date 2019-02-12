@@ -110,13 +110,14 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 
         SetterInvoker invoker = invokerMap.get(lowerCaseColumnName);
         if (invoker != null) {
-            TypeHandler<?> typeHandler = TypeHandlerRegistry.getTypeHandler(invoker.getRawType(), rsw.getJdbcType(index));
+            TypeHandler<?> typeHandler = TypeHandlerRegistry.getTypeHandler(invoker.getJdbcType(), rsw.getJdbcType(index));
             Object value = typeHandler.getResult(rsw.getResultSet(), index);
             if (logger.isDebugEnabled() && rowNumber == 0) {
                 logger.debug("Mapping column '" + rsw.getColumnName(index) + "' to property '" +
                         invoker.name() + "' of type " + invoker.getRawType());
             }
             invoker.invoke(mappedObject, value);
+            return;
         }
         throw new MappingException("Unable to map column '" + rsw.getColumnName(index) +
                 "' to any property of '" + mappedClass + "'");

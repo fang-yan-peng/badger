@@ -51,7 +51,7 @@ public class JdbcSelectHelper {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList);
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
@@ -62,7 +62,8 @@ public class JdbcSelectHelper {
         }
         sql.append(" WHERE ").append(condition);
         return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
-                paramList, sql.toString(), new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster);
+                paramList, sql.toString(),
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
     }
 
     /**
@@ -104,7 +105,7 @@ public class JdbcSelectHelper {
         CheckConditions.checkPageSize(pageSize, badger.getPageSizeLimit());
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList);
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList,badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
@@ -120,7 +121,8 @@ public class JdbcSelectHelper {
         sql.append(" WHERE ").append(condition);
         String resSql = dialect.getPageSql(sql.toString(), start, pageSize);
         return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
-                paramList, resSql, new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster);
+                paramList, resSql,
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
     }
 
     /**
@@ -136,12 +138,13 @@ public class JdbcSelectHelper {
     public static <T> long count(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) throws Exception {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList);
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         String sql = tableName == null ? dialect.countSql(clazz, condition) : dialect.countSql(clazz, tableName, condition);
         return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
-                paramList, sql, new ObjectResultSetExtractor<>(RowMapplerRegistry.getRowMapper(long.class)), useMaster);
+                paramList, sql,
+                new ObjectResultSetExtractor<>(RowMapplerRegistry.getRowMapper(long.class)), useMaster, true);
     }
 }

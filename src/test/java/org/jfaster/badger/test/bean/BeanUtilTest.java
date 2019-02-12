@@ -11,7 +11,7 @@ import org.junit.Test;
 public class BeanUtilTest {
 
     @Test
-    public void simpleBean() throws Exception{
+    public void simpleBean() {
         for (PropertyMeta meta : BeanUtil.fetchPropertyMetas(ParentBean.class)) {
             System.out.println(meta.getName());
             System.out.println(meta.getType());
@@ -21,7 +21,7 @@ public class BeanUtilTest {
     }
 
     @Test
-    public void complexBean() throws Exception{
+    public void complexBean() {
         for (PropertyMeta meta : BeanUtil.fetchPropertyMetas(ChildBean.class)) {
             System.out.println(meta.getName());
             System.out.println(meta.getType());

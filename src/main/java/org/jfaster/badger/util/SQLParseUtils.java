@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
+import org.jfaster.badger.Badger;
 import org.jfaster.badger.exception.BadgerException;
 import org.jfaster.badger.query.shard.ShardTableInfo;
 import org.jfaster.badger.query.sql.SqlTree;
@@ -28,7 +29,7 @@ public class SQLParseUtils {
 
     private static final Map<Pair, ParseResult> expressions = new ConcurrentHashMap<>();
 
-    public static ParseResult parse(Class<?> clazz, String expression)
+    public static ParseResult parse(Class<?> clazz, String expression, Badger badger)
             throws IOException {
         Pair pair = Pair.of(clazz, expression);
         ParseResult cache = expressions.get(pair);
@@ -82,13 +83,16 @@ public class SQLParseUtils {
                 }
             }
         }
-        if (!hasIn && expressions.size() < 10000) { //如果表达式有in则，不缓存，因为sql会跟着in的内的参数改变，后续优化in(?,?,?) 为in(?)
+        /**
+         * 如果表达式有in则，不缓存，因为sql会跟着in的内的参数改变，后续优化in(?,?,?)为in(?)
+         */
+        if (!hasIn && expressions.size() < badger.getCacheSqlLimit()) {
             expressions.put(pair, cache);
         }
         return cache;
     }
 
-    public static ParseResult parseUpdateStatment(Class<?> clazz, String updateStatement)
+    public static ParseResult parseUpdateStatement(Class<?> clazz, String updateStatement, Badger badger)
             throws IOException {
         Pair pair = Pair.of(clazz, updateStatement);
         ParseResult cache = expressions.get(pair);
@@ -115,7 +119,7 @@ public class SQLParseUtils {
                 cache.getDynamicFields().add(SqlUtils.getFieldByColumn(clazz, fields.get(i)));
             }
         }
-        if (expressions.size() < 10000) {
+        if (expressions.size() < badger.getCacheSqlLimit()) {
             expressions.put(pair, cache);
         }
         return cache;

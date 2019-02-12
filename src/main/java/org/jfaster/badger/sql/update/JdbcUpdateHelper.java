@@ -32,8 +32,9 @@ public class JdbcUpdateHelper {
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         String sql = tableName == null ? dialect.updateEntitySql(clazz) : dialect.updateEntitySql(clazz, tableName);
-        List<String> fields = SqlUtils.getFields(clazz);
-        return JdbcHelper.executeUpdate(badger, clazz, fields, dbName, Lists.transform(fields, (f) -> SqlUtils.getValueByField(t, f)), sql);
+        List<String> fields = SqlUtils.getAllFields(clazz);
+        return JdbcHelper.executeUpdate(badger, clazz, fields, dbName, Lists.transform(fields,
+                (f) -> SqlUtils.getValueByField(t, f)), sql, false);
     }
 
     /**
@@ -48,11 +49,11 @@ public class JdbcUpdateHelper {
             String condition, List<Object> parameters, Badger badger) throws Exception {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, updateStatement, condition, parameters);
+        ShardResult shardResult = ShardUtils.shard(clazz, updateStatement, condition, parameters,badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
         String sql = tableName == null ? dialect.updateSql(clazz, updateStatement, condition) : dialect.updateSql(clazz, updateStatement, condition, tableName);
-        return JdbcHelper.executeUpdate(badger, clazz, dynamicFields, dbName, parameters, sql);
+        return JdbcHelper.executeUpdate(badger, clazz, dynamicFields, dbName, parameters, sql, true);
     }
 }
