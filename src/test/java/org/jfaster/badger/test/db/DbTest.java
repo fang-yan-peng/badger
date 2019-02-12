@@ -242,7 +242,7 @@ public class DbTest {
     @Test(expected = MappingException.class)
     public void transactionTest() {
         TransactionTemplate.execute(status -> {
-            badger.delete(Driver.class, 13);
+            badger.delete(Driver.class, 15);
             //分库分表字段不是id则抛异常
             badger.delete(Order.class, "P224378961549867525895");
         });

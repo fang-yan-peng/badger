@@ -44,5 +44,5 @@ public class Config {
     /**
      * 设置是否使用spring的事物管理器
      */
-    private boolean useSpringTransaction = false;
+    private String transactionManager = "badger";
 }

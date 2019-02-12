@@ -17,9 +17,10 @@ import org.jfaster.badger.jdbc.type.TypeHandler;
 import org.jfaster.badger.jdbc.type.TypeHandlerRegistry;
 import org.jfaster.badger.jdbc.type.convert.TypeConverter;
 import org.jfaster.badger.query.bean.invoker.GetterInvoker;
+import org.jfaster.badger.spi.ExtensionLoader;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
 import org.jfaster.badger.sql.update.JdbcUpdateHelper;
-import org.jfaster.badger.transaction.DataSourceUtils;
+import org.jfaster.badger.transaction.ConnectionManager;
 import org.jfaster.badger.util.ExceptionUtils;
 import org.jfaster.badger.util.JdbcUtils;
 import org.jfaster.badger.util.SqlUtils;
@@ -41,7 +42,11 @@ public class JdbcHelper {
         boolean hasInterceptor = interceptor != null;
         int res;
         DataSource dataSource = badger.getMasterDataSource(dbName);
-        Connection conn = DataSourceUtils.getConnection(dataSource);
+        ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension(badger.getTransactionManager());
+        if (manager == null) {
+            throw new BadgerException("transactionManager:%s not found");
+        }
+        Connection conn = manager.getConnection(dataSource);
         PreparedStatement ps = null;
         Statement st = null;
         try {
@@ -71,7 +76,7 @@ public class JdbcHelper {
             }
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, dataSource, hasInterceptor, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, ps, st, manager);
         }
         return res;
     }
@@ -81,7 +86,11 @@ public class JdbcHelper {
         boolean hasInterceptor = interceptor != null;
         int res;
         DataSource dataSource = badger.getMasterDataSource(dbName);
-        Connection conn = DataSourceUtils.getConnection(dataSource);
+        ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension(badger.getTransactionManager());
+        if (manager == null) {
+            throw new BadgerException("transactionManager:%s not found");
+        }
+        Connection conn = manager.getConnection(dataSource);
         PreparedStatement ps = null;
         Statement st = null;
         try {
@@ -111,7 +120,7 @@ public class JdbcHelper {
             }
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, dataSource, hasInterceptor, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, ps, st, manager);
         }
         return res;
     }
@@ -120,7 +129,11 @@ public class JdbcHelper {
             String dbName, List<Object> parameters, String sql,
             ResultSetExtractor<O> extractor, boolean useMaster, boolean convert) throws Exception {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
-        Connection conn = DataSourceUtils.getConnection(dataSource);
+        ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension(badger.getTransactionManager());
+        if (manager == null) {
+            throw new BadgerException("transactionManager:%s not found");
+        }
+        Connection conn = manager.getConnection(dataSource);
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         ResultSet rs = null;
@@ -155,15 +168,19 @@ public class JdbcHelper {
             logger.error(str, e);
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, dataSource, hasInterceptor, rs, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, rs, ps, st, manager);
         }
         return res;
     }
 
     public static <O> O executeQuery(Badger badger, String dbName, List<Object> parameters, String sql,
-            ResultSetExtractor<O> extractor, boolean useMaster) throws Exception {
+            ResultSetExtractor<O> extractor, boolean useMaster) {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
-        Connection conn = DataSourceUtils.getConnection(dataSource);
+        ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension(badger.getTransactionManager());
+        if (manager == null) {
+            throw new BadgerException("transactionManager:%s not found");
+        }
+        Connection conn = manager.getConnection(dataSource);
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         ResultSet rs = null;
@@ -198,7 +215,7 @@ public class JdbcHelper {
             logger.error(str, e);
             throw new BadgerException(str, e);
         } finally {
-            closeResource(conn, dataSource, hasInterceptor, rs, ps, st);
+            closeResource(conn, dataSource, hasInterceptor, rs, ps, st, manager);
         }
         return res;
     }
@@ -206,11 +223,11 @@ public class JdbcHelper {
     private static void closeResource(Connection conn, DataSource dataSource,
             boolean hasInterceptor,
             ResultSet rs,
-            PreparedStatement ps, Statement st) {
+            PreparedStatement ps, Statement st, ConnectionManager manager) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(ps);
         JdbcUtils.closeStatement(st);
-        DataSourceUtils.releaseConnection(conn, dataSource);
+        manager.releaseConnection(conn, dataSource);
         if (hasInterceptor) {
             SqlInterceptor.clear();
         }
@@ -219,10 +236,10 @@ public class JdbcHelper {
     private static void closeResource(Connection conn, DataSource dataSource,
             boolean hasInterceptor,
             PreparedStatement ps,
-            Statement st) {
+            Statement st, ConnectionManager manager) {
         JdbcUtils.closeStatement(ps);
         JdbcUtils.closeStatement(st);
-        DataSourceUtils.releaseConnection(conn, dataSource);
+        manager.releaseConnection(conn, dataSource);
         if (hasInterceptor) {
             SqlInterceptor.clear();
         }

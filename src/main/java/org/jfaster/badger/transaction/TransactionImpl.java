@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 
+import org.jfaster.badger.spi.ExtensionLoader;
 import org.jfaster.badger.transaction.exception.IllegalTransactionStateException;
 import org.jfaster.badger.transaction.exception.TransactionSystemException;
 import org.slf4j.Logger;
@@ -162,7 +163,8 @@ public class TransactionImpl implements Transaction {
   private void cleanup(Connection conn) {
     TransactionSynchronizationManager.unbindConnectionHolder(dataSource);
     resetConnectionAfterTransaction(conn);
-    DataSourceUtils.releaseConnection(conn, dataSource);
+    ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension("badger");
+    manager.releaseConnection(conn, dataSource);
     completed = true;
   }
 

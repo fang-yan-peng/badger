@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import org.jfaster.badger.Badger;
 import org.jfaster.badger.jdbc.datasource.support.AbstractDataSourceFactory;
+import org.jfaster.badger.spi.ExtensionLoader;
 import org.jfaster.badger.transaction.exception.CannotCreateTransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,7 +118,8 @@ public abstract class TransactionFactory {
             TransactionSynchronizationManager.bindConnectionHolder(dataSource, connHolder);
             return transaction;
         } catch (Throwable e) {
-            DataSourceUtils.releaseConnection(conn, dataSource);
+            ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension("badger");
+            manager.releaseConnection(conn, dataSource);
             throw new CannotCreateTransactionException("Could not open JDBC Connection for transaction", e);
         }
     }

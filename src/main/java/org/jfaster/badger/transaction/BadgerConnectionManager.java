@@ -5,16 +5,17 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jfaster.badger.spi.SpiMeta;
 import org.jfaster.badger.transaction.exception.CannotGetJdbcConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SpiMeta(name = "badger")
+public class BadgerConnectionManager implements ConnectionManager {
 
-public class DataSourceUtils {
+    private final static Logger logger = LoggerFactory.getLogger(BadgerConnectionManager.class);
 
-    private final static Logger logger = LoggerFactory.getLogger(DataSourceUtils.class);
-
-    public static Connection getConnection(DataSource dataSource) throws CannotGetJdbcConnectionException {
+    public Connection getConnection(DataSource dataSource) throws CannotGetJdbcConnectionException {
         try {
             return doGetConnection(dataSource);
         } catch (SQLException e) {
@@ -22,7 +23,7 @@ public class DataSourceUtils {
         }
     }
 
-    private static Connection doGetConnection(DataSource dataSource) throws SQLException {
+    private Connection doGetConnection(DataSource dataSource) throws SQLException {
         ConnectionHolder connHolder = TransactionSynchronizationManager.getConnectionHolder(dataSource);
         if (connHolder != null) {
             if (logger.isDebugEnabled()) {
@@ -50,7 +51,7 @@ public class DataSourceUtils {
     }
 
 
-    public static void releaseConnection(Connection conn, DataSource dataSource) {
+    public void releaseConnection(Connection conn, DataSource dataSource) {
         try {
             doReleaseConnection(conn, dataSource);
         } catch (SQLException e) {
@@ -60,7 +61,7 @@ public class DataSourceUtils {
         }
     }
 
-    private static void doReleaseConnection(Connection conn, DataSource dataSource) throws SQLException {
+    private void doReleaseConnection(Connection conn, DataSource dataSource) throws SQLException {
         if (conn == null) {
             return;
         }
@@ -74,7 +75,7 @@ public class DataSourceUtils {
         conn.close();
     }
 
-    private static boolean connectionEquals(ConnectionHolder connHolder, Connection passedInConn) {
+    private boolean connectionEquals(ConnectionHolder connHolder, Connection passedInConn) {
         Connection heldConn = connHolder.getConnection();
         return heldConn == passedInConn || heldConn.equals(passedInConn);
     }
