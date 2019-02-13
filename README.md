@@ -624,6 +624,32 @@ public class DriverOrderServiceImpl implements DriverOrderService {
 
 ```
 
+## 设置拦截器
+
+> 设置拦截器，可以在sql执行之前和之后做一些操作，比如统计sql的执行时间等等
+
+```java
+badger.setInterceptor(new SqlInterceptor() {
+
+    @Override
+    public void before(String sql) {
+        System.out.println("sql:" + sql + " begin to execute");
+        SqlInterceptor.put("startTime", System.currentTimeMillis());
+    }
+
+    @Override
+    public void after(String sql) {
+        long startTime = SqlInterceptor.get("startTime", Long.class);
+        System.out.println("sql:" + sql + " execute success, execute time:" + (System.currentTimeMillis() - startTime));
+    }
+
+    @Override
+    public void error(String sql, Throwable e) {
+        System.out.println("sql:" + sql + " execute fail " + e.getMessage());
+    }
+});
+```
+
 ## 自定义sql
 
 > 自定义sql，不建议使用。脱离了单表操作，根据个人需要自定义sql。在自定义sql情况下，Badger不解析sql，所以不会重写表名，不支持分库分表。分表的信息需要自己实现，拼接到sql中。分库操作则需要指定库名。复杂sql查询可以拆分成多次单表查询。大表本身不建议join等操作。
