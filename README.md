@@ -419,8 +419,8 @@ badger.setDataSourceFactory(new MasterSlaveDataSourceFactory(dataSource,Collecti
 
 ```java
 /**
-  * 根据id更新所有字段。
-  */
+* 根据id更新所有字段。
+*/
 @Test
 public void updateTest() {
     Driver driver = badger.get(Driver.class, 14, true);
