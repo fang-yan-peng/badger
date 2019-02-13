@@ -16,7 +16,7 @@ public class JdbcSqlSelectHelper {
 
     public static <T> List<T> find(Class<T> clazz, String sql,
             String dbName, List<Object> paramList,
-            Badger badger, boolean useMaster) throws Exception {
+            Badger badger, boolean useMaster) {
         return JdbcHelper.executeQuery(badger, dbName, paramList, sql, new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster);
     }
 }

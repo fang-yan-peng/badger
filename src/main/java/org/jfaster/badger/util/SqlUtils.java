@@ -95,7 +95,7 @@ public class SqlUtils {
         return getClassInfo(clazz).getIdColumns();
     }
 
-    public static Object getPKValue(Object t) throws Exception {
+    public static Object getPKValue(Object t) {
         Class<?> clazz = t.getClass();
         List<String> idFieldList = getIdFields(clazz);
         if (!idFieldList.isEmpty()) {
@@ -112,7 +112,7 @@ public class SqlUtils {
         return null;
     }
 
-    public static boolean hasPKValue(Object t) throws Exception {
+    public static boolean hasPKValue(Object t) {
         Object id = getPKValue(t);
         if (id != null) {
             if ((id instanceof Long) && id.equals(0L)) {

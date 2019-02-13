@@ -32,7 +32,7 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
-    public UpdateStatement addParam(Object obj) throws Exception {
+    public UpdateStatement addParam(Object obj) {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -40,7 +40,7 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
-    public UpdateStatement addParam(Object... objs) throws Exception {
+    public UpdateStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -52,7 +52,7 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
-    public UpdateStatement addParam(Collection<Object> objs) throws Exception {
+    public UpdateStatement addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -64,7 +64,7 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
-    public int execute() throws Exception {
+    public int execute() {
         return JdbcUpdateHelper.updateByCondition(clazz, updateStatement, condition, paramList, badger);
     }
 

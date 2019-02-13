@@ -81,7 +81,7 @@ public class JdbcHelper {
         return res;
     }
 
-    public static int executeUpdate(Badger badger, String sql, String dbName, List<Object> parameters) throws Exception {
+    public static int executeUpdate(Badger badger, String sql, String dbName, List<Object> parameters) {
         SqlInterceptor interceptor = badger.getInterceptor();
         boolean hasInterceptor = interceptor != null;
         int res;
@@ -127,7 +127,7 @@ public class JdbcHelper {
 
     public static <T, O> O executeQuery(Badger badger, Class<T> clazz, List<String> dynamicFields,
             String dbName, List<Object> parameters, String sql,
-            ResultSetExtractor<O> extractor, boolean useMaster, boolean convert) throws Exception {
+            ResultSetExtractor<O> extractor, boolean useMaster, boolean convert) {
         DataSource dataSource = useMaster ? badger.getMasterDataSource(dbName) : badger.getSlaveDataSource(dbName);
         ConnectionManager manager = ExtensionLoader.get(ConnectionManager.class).getExtension(badger.getTransactionManager());
         if (manager == null) {

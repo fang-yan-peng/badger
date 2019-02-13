@@ -11,22 +11,22 @@ public interface UpdateStatement {
     /*
      * 添加参数
      */
-    UpdateStatement addParam(Object obj) throws Exception;
+    UpdateStatement addParam(Object obj);
 
     /*
      * 添加参数
      */
-    UpdateStatement addParam(Object... objs) throws Exception;
+    UpdateStatement addParam(Object... objs);
 
     /*
      * 添加参数
      */
-    UpdateStatement addParam(Collection<Object> objs) throws Exception;
+    UpdateStatement addParam(Collection<Object> objs);
 
     /**
      * 执行查询
      * @return
      */
-    int execute() throws Exception;
+    int execute();
 
 }

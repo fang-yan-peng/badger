@@ -29,8 +29,7 @@ public class SQLParseUtils {
 
     private static final Map<Pair, ParseResult> expressions = new ConcurrentHashMap<>();
 
-    public static ParseResult parse(Class<?> clazz, String expression, Badger badger)
-            throws IOException {
+    public static ParseResult parse(Class<?> clazz, String expression, Badger badger) {
         Pair pair = Pair.of(clazz, expression);
         ParseResult cache = expressions.get(pair);
         if (cache != null) {
@@ -38,7 +37,12 @@ public class SQLParseUtils {
         }
         cache = new ParseResult();
         InputStream is = new ByteArrayInputStream(expression.getBytes());
-        CharStream cs = CharStreams.fromStream(is);
+        CharStream cs = null;
+        try {
+            cs = CharStreams.fromStream(is);
+        } catch (IOException e) {
+            throw new BadgerException(e);
+        }
         BadgerSqlLexer esl = new BadgerSqlLexer(cs);
         TokenStream ts = new CommonTokenStream(esl);
         BadgerSqlParser esp = new BadgerSqlParser(ts);
@@ -92,8 +96,7 @@ public class SQLParseUtils {
         return cache;
     }
 
-    public static ParseResult parseUpdateStatement(Class<?> clazz, String updateStatement, Badger badger)
-            throws IOException {
+    public static ParseResult parseUpdateStatement(Class<?> clazz, String updateStatement, Badger badger) {
         Pair pair = Pair.of(clazz, updateStatement);
         ParseResult cache = expressions.get(pair);
         if (cache != null) {
@@ -101,7 +104,12 @@ public class SQLParseUtils {
         }
         cache = new ParseResult();
         InputStream is = new ByteArrayInputStream(updateStatement.getBytes());
-        CharStream cs = CharStreams.fromStream(is);
+        CharStream cs = null;
+        try {
+            cs = CharStreams.fromStream(is);
+        } catch (IOException e) {
+            throw new BadgerException(e);
+        }
         BadgerSqlLexer esl = new BadgerSqlLexer(cs);
         TokenStream ts = new CommonTokenStream(esl);
         BadgerSqlParser esp = new BadgerSqlParser(ts);

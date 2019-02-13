@@ -26,7 +26,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
-    public DeleteStatement addParam(Object obj) throws Exception {
+    public DeleteStatement addParam(Object obj) {
         CheckConditions.checkNotNull(obj, "parameter can not be null");
         initParamList();
         paramList.add(obj);
@@ -34,7 +34,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
-    public DeleteStatement addParam(Object... objs) throws Exception {
+    public DeleteStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -46,7 +46,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
-    public DeleteStatement addParam(Collection<Object> objs) throws Exception {
+    public DeleteStatement addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -58,7 +58,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
-    public int execute() throws Exception {
+    public int execute() {
         return JdbcDeleteHelper.deleteByCondition(clazz, condition, paramList, badger);
     }
 }

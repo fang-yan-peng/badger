@@ -28,9 +28,8 @@ public class JdbcSelectHelper {
      * @param useMaster
      * @param <T>
      * @return
-     * @throws Exception
      */
-    public static <T> List<T> find(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) throws Exception {
+    public static <T> List<T> find(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) {
         return find(clazz, "*", condition, paramList, badger, useMaster);
     }
 
@@ -44,9 +43,8 @@ public class JdbcSelectHelper {
      * @param useMaster
      * @param <T>
      * @return
-     * @throws Exception
      */
-    public static <T> List<T> find(Class<T> clazz, String columns, String condition, List<Object> paramList, Badger badger, boolean useMaster) throws Exception {
+    public static <T> List<T> find(Class<T> clazz, String columns, String condition, List<Object> paramList, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         StringBuilder sql = new StringBuilder();
@@ -77,10 +75,9 @@ public class JdbcSelectHelper {
      * @param useMaster
      * @param <T>
      * @return
-     * @throws Exception
      */
     public static <T> List<T> findByPage(Class<T> clazz, String condition,
-            List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) throws Exception {
+            List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) {
         return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, badger, useMaster);
     }
 
@@ -96,10 +93,9 @@ public class JdbcSelectHelper {
      * @param useMaster
      * @param <T>
      * @return
-     * @throws Exception
      */
     public static <T> List<T> findByPage(Class<T> clazz, String columns, String condition,
-            List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) throws Exception {
+            List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         CheckConditions.checkPageSize(pageSize, badger.getPageSizeLimit());
@@ -135,7 +131,7 @@ public class JdbcSelectHelper {
      * @param <T>
      * @return
      */
-    public static <T> long count(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) throws Exception {
+    public static <T> long count(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
         ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);

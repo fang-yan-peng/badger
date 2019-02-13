@@ -44,9 +44,6 @@ public class TransactionTemplate {
         } catch (RuntimeException e) {
             transaction.rollback();
             throw e;
-        } catch (Exception e) {
-            transaction.rollback();
-            throw new TransactionSystemException(e);
         }
         if (status.isRollbackOnly()) {
             transaction.setRollbackOnly(true);

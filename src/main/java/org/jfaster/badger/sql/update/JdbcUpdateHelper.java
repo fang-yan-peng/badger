@@ -25,7 +25,7 @@ public class JdbcUpdateHelper {
      * @param badger
      * @return
      */
-    public static int updateEntity(Object t, Badger badger) throws Exception {
+    public static int updateEntity(Object t, Badger badger) {
         Class<?> clazz = t.getClass();
         ShardResult shardResult = ShardUtils.shard(t, true);
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
@@ -46,10 +46,10 @@ public class JdbcUpdateHelper {
      * @return
      */
     public static <T> int updateByCondition(Class<T> clazz, String updateStatement,
-            String condition, List<Object> parameters, Badger badger) throws Exception {
+            String condition, List<Object> parameters, Badger badger) {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, updateStatement, condition, parameters,badger);
+        ShardResult shardResult = ShardUtils.shard(clazz, updateStatement, condition, parameters, badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();

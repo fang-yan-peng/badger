@@ -11,23 +11,22 @@ public interface UpdateSqlStatement {
     /*
      * 添加参数
      */
-    UpdateSqlStatement addParam(Object obj) throws Exception;
+    UpdateSqlStatement addParam(Object obj) ;
 
     /*
      * 添加参数
      */
-    UpdateSqlStatement addParam(Object... objs) throws Exception;
+    UpdateSqlStatement addParam(Object... objs) ;
 
     /*
      * 添加参数
      */
-    UpdateSqlStatement addParam(Collection<Object> objs) throws Exception;
+    UpdateSqlStatement addParam(Collection<Object> objs) ;
 
     /**
      * 设置数据源名
      * @param name
      * @return
-     * @throws Exception
      */
     UpdateSqlStatement setDataSourceName(String name);
 
@@ -35,6 +34,6 @@ public interface UpdateSqlStatement {
      * 执行查询
      * @return
      */
-    int execute() throws Exception;
+    int execute() ;
 
 }

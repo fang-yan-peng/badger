@@ -9,17 +9,17 @@ public interface DeleteStatement {
 	/*
 	 * 添加参数
 	 */
-	DeleteStatement addParam(Object obj) throws Exception;
+	DeleteStatement addParam(Object obj);
 	
 	/*
 	 * 添加参数
 	 */
-	DeleteStatement addParam(Object... objs) throws Exception;
+	DeleteStatement addParam(Object... objs);
 	
 	/*
 	 * 添加参数
 	 */
-	DeleteStatement addParam(Collection<Object> objs) throws Exception;
+	DeleteStatement addParam(Collection<Object> objs);
 
 
 	/**
@@ -27,6 +27,6 @@ public interface DeleteStatement {
 	 * @return
 	 * @throws Exception
 	 */
-	int execute() throws Exception;
+	int execute();
 
 }

@@ -23,8 +23,7 @@ public class JdbcGetHelper {
 
     private static Long long0 = 0L;
 
-    public static <T> T get(Class<T> clazz, Object id, Badger badger, boolean useMaster) throws
-            Exception {
+    public static <T> T get(Class<T> clazz, Object id, Badger badger, boolean useMaster) {
         if (id == null) {
             return null;
         }

@@ -12,17 +12,17 @@ public interface SQLQuery<T> {
     /*
      * 添加参数
      */
-    SQLQuery addParam(Object obj) throws Exception;
+    SQLQuery addParam(Object obj) ;
 
     /*
      * 添加参数
      */
-    SQLQuery addParam(Object... objs) throws Exception;
+    SQLQuery addParam(Object... objs) ;
 
     /*
      * 添加参数
      */
-    SQLQuery addParam(Collection<Object> objs) throws Exception;
+    SQLQuery addParam(Collection<Object> objs) ;
 
     /**
      * 设置数据源名称
@@ -40,5 +40,5 @@ public interface SQLQuery<T> {
     /*
      * 返回列表
      */
-    List<T> list() throws Exception;
+    List<T> list() ;
 }

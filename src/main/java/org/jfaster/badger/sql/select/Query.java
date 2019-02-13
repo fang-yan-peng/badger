@@ -12,17 +12,17 @@ public interface Query<T> {
     /*
      * 添加参数
      */
-    Query addParam(Object obj) throws Exception;
+    Query addParam(Object obj);
 
     /*
      * 添加参数
      */
-    Query addParam(Object... objs) throws Exception;
+    Query addParam(Object... objs);
 
     /*
      * 添加参数
      */
-    Query addParam(Collection<Object> objs) throws Exception;
+    Query addParam(Collection<Object> objs);
 
     /**
      * 强制使用master
@@ -33,12 +33,12 @@ public interface Query<T> {
     /*
      * 返回列表
      */
-    List<T> list() throws Exception;
+    List<T> list();
 
     /*
      * 返回统计结果
      */
-    long count() throws Exception;
+    long count();
 
     /*
      * 设置结果集大小

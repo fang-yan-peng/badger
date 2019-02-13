@@ -32,7 +32,7 @@ public class UpdateSqlStatementImpl implements UpdateSqlStatement {
     }
 
     @Override
-    public UpdateSqlStatement addParam(Object obj) throws Exception {
+    public UpdateSqlStatement addParam(Object obj) {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -40,7 +40,7 @@ public class UpdateSqlStatementImpl implements UpdateSqlStatement {
     }
 
     @Override
-    public UpdateSqlStatement addParam(Object... objs) throws Exception {
+    public UpdateSqlStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -52,7 +52,7 @@ public class UpdateSqlStatementImpl implements UpdateSqlStatement {
     }
 
     @Override
-    public UpdateSqlStatement addParam(Collection<Object> objs) throws Exception {
+    public UpdateSqlStatement addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -71,7 +71,7 @@ public class UpdateSqlStatementImpl implements UpdateSqlStatement {
     }
 
     @Override
-    public int execute() throws Exception {
+    public int execute() {
         return JdbcHelper.executeUpdate(badger, sql,
                 Strings.isNullOrEmpty(dbName) ? DEFULT_NAME : dbName,
                 paramList);

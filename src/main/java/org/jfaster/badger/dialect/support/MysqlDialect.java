@@ -37,7 +37,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public InsertResult insertSqlNotNull(Object t, boolean ignore) throws Exception {
+    public InsertResult insertSqlNotNull(Object t, boolean ignore) {
         return this.insertSqlNotNull(t, SqlUtils.getTableInfo(t.getClass()).getTableName(), ignore);
     }
 
@@ -50,7 +50,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public InsertResult insertSqlNotNull(Object t, String tableName, boolean ignore) throws Exception {
+    public InsertResult insertSqlNotNull(Object t, String tableName, boolean ignore) {
         Class<?> clazz = t.getClass();
         InsertResult rs = new InsertResult();
         StringBuilder sql = new StringBuilder("INSERT");
@@ -99,7 +99,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public InsertResult insertSql(Object t, boolean ignore) throws Exception {
+    public InsertResult insertSql(Object t, boolean ignore) {
         Class<?> clazz = t.getClass();
         InsertResult rs = new InsertResult();
         boolean hasPKValue = SqlUtils.hasPKValue(t);
@@ -159,7 +159,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public InsertResult insertSql(Object t, String tableName, boolean ignore) throws Exception {
+    public InsertResult insertSql(Object t, String tableName, boolean ignore) {
         Class<?> clazz = t.getClass();
         InsertResult rs = new InsertResult();
         boolean hasPKValue = SqlUtils.hasPKValue(t);
@@ -203,7 +203,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String getSql(Class<?> clazz) throws Exception {
+    public String getSql(Class<?> clazz) {
         String sql = getSqlMap.get(clazz);
         if (sql != null) {
             return sql;
@@ -246,7 +246,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String getSql(Class<?> clazz, String tableName) throws Exception {
+    public String getSql(Class<?> clazz, String tableName) {
         String sql;
         String idColumnName;
         List<String> idColumns = SqlUtils.getIdColumns(clazz);
@@ -284,7 +284,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String deleteEntitySql(Class<?> clazz) throws Exception {
+    public String deleteEntitySql(Class<?> clazz) {
         String sql = deleteSqlMap.get(clazz);
         if (sql != null) {
             return sql;
@@ -317,7 +317,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String deleteEntitySql(Class<?> clazz, String tableName) throws Exception {
+    public String deleteEntitySql(Class<?> clazz, String tableName) {
         String sql;
         String idColumnName;
         List<String> idColumns = SqlUtils.getIdColumns(clazz);
@@ -345,7 +345,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String deleteConditionSql(Class<?> clazz, String condition) throws Exception {
+    public String deleteConditionSql(Class<?> clazz, String condition) {
         StringBuilder sbSql = new StringBuilder("DELETE FROM `");
         sbSql.append(SqlUtils.getTableInfo(clazz).getTableName());
         sbSql.append("`");
@@ -364,7 +364,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String deleteConditionSql(Class<?> clazz, String condition, String tableName) throws Exception {
+    public String deleteConditionSql(Class<?> clazz, String condition, String tableName) {
         StringBuilder sbSql = new StringBuilder("DELETE FROM `");
         sbSql.append(tableName);
         sbSql.append("`");
@@ -381,7 +381,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String updateEntitySql(Class<?> clazz) throws Exception {
+    public String updateEntitySql(Class<?> clazz) {
         String sql = updateSqlMap.get(clazz);
         if (sql != null) {
             return sql;
@@ -427,7 +427,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String updateEntitySql(Class<?> clazz, String tableName) throws Exception {
+    public String updateEntitySql(Class<?> clazz, String tableName) {
         String idColumnName;
         List<String> idColumns = SqlUtils.getIdColumns(clazz);
         if (idColumns.size() != 1) {
@@ -460,7 +460,7 @@ public class MysqlDialect implements Dialect {
     }
 
     @Override
-    public String updateSql(Class<?> clazz, String updateStatement, String condition) throws Exception {
+    public String updateSql(Class<?> clazz, String updateStatement, String condition) {
         StringBuilder sbSql = new StringBuilder("UPDATE `");
         sbSql.append(SqlUtils.getTableInfo(clazz).getTableName());
         sbSql.append("` SET ").append(updateStatement);
@@ -471,7 +471,7 @@ public class MysqlDialect implements Dialect {
     }
 
     @Override
-    public String updateSql(Class<?> clazz, String updateStatement, String condition, String tableName) throws Exception {
+    public String updateSql(Class<?> clazz, String updateStatement, String condition, String tableName) {
         StringBuilder sbSql = new StringBuilder("UPDATE `");
         sbSql.append(tableName);
         sbSql.append("` SET ").append(updateStatement);
@@ -488,7 +488,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String selectAllSql(Class<?> clazz) throws Exception {
+    public String selectAllSql(Class<?> clazz) {
         String sql = selectSqlMap.get(clazz);
         if (sql != null) {
             return sql;
@@ -519,7 +519,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String selectAllSql(Class<?> clazz, String tableName) throws Exception {
+    public String selectAllSql(Class<?> clazz, String tableName) {
         StringBuilder sbSql = new StringBuilder("SELECT ");
         List<String> columns = SqlUtils.getAllColumns(clazz);
         if (columns.isEmpty()) {
@@ -543,7 +543,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String selectSql(Class<?> clazz, String columns) throws Exception {
+    public String selectSql(Class<?> clazz, String columns) {
         StringBuilder sbSql = new StringBuilder("SELECT ");
         sbSql.append(columns);
         sbSql.append(" FROM `");
@@ -559,7 +559,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String selectSql(Class<?> clazz, String columns, String tableName) throws Exception {
+    public String selectSql(Class<?> clazz, String columns, String tableName) {
         StringBuilder sbSql = new StringBuilder("SELECT ");
         sbSql.append(columns);
         sbSql.append(" FROM `");
@@ -574,7 +574,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String countSql(Class<?> clazz) throws Exception {
+    public String countSql(Class<?> clazz) {
         String sql = countSqlMap.get(clazz);
         if (sql != null) {
             return sql;
@@ -587,7 +587,7 @@ public class MysqlDialect implements Dialect {
     }
 
     @Override
-    public String countSql(Class<?> clazz, String condition) throws Exception {
+    public String countSql(Class<?> clazz, String condition) {
         if (Strings.isNullOrEmpty(condition)) {
             return countSql(clazz);
         }
@@ -606,7 +606,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String countSql(Class<?> clazz, String tableName, String condition) throws Exception {
+    public String countSql(Class<?> clazz, String tableName, String condition) {
         StringBuilder sbSql = new StringBuilder("SELECT COUNT(1) FROM `");
         sbSql.append(SqlUtils.getTableInfo(clazz).getTableName()).append("`");
         sbSql.append(" WHERE ").append(condition);
@@ -622,7 +622,7 @@ public class MysqlDialect implements Dialect {
      * @throws Exception
      */
     @Override
-    public String getPageSql(String sql, int pageIndex, int pageSize) throws Exception {
+    public String getPageSql(String sql, int pageIndex, int pageSize) {
         StringBuilder sb = new StringBuilder(sql);
         sb.append(" LIMIT ").append(pageIndex).append(",").append(pageSize);
         return sb.toString();

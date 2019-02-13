@@ -45,7 +45,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Object obj) throws Exception {
+    public Query addParam(Object obj)  {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -53,7 +53,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Object... objs) throws Exception {
+    public Query addParam(Object... objs)  {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -65,7 +65,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Collection<Object> objs) throws Exception {
+    public Query addParam(Collection<Object> objs)  {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -83,7 +83,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public List<T> list() throws Exception {
+    public List<T> list()  {
         if (Strings.isNullOrEmpty(columns)) {
             columns = "*";
         }
@@ -97,7 +97,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public long count() throws Exception {
+    public long count()  {
         return JdbcSelectHelper.count(clazz, condition, paramList, badger, useMaster);
     }
 

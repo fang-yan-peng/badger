@@ -72,10 +72,9 @@ public class DbTest {
 
     /**
      * 插入，插入所有字段，插入非空字段，插入唯一索引冲突忽略。
-     * @throws Exception
      */
     @Test
-    public void insertTest() throws Exception {
+    public void insertTest() {
         Date now = new Date();
         Driver driver = new Driver();
         driver.setAge(43);
@@ -110,10 +109,9 @@ public class DbTest {
 
     /**
      *  根据id删除。
-     * @throws Exception
      */
     @Test(expected = MappingException.class)
-    public void deleteTest() throws Exception {
+    public void deleteTest() {
         badger.delete(Driver.class, 3);
         //分库分表字段不是id则抛异常
         badger.delete(Order.class, "P224378961549863778117");
@@ -121,10 +119,9 @@ public class DbTest {
 
     /**
      * 根据id更新所有字段。
-     * @throws Exception
      */
     @Test
-    public void updateTest() throws Exception {
+    public void updateTest() {
         Driver driver = badger.get(Driver.class, 14);
         if (driver == null || driver.getDriverId() == 0) {
             return;
@@ -136,10 +133,9 @@ public class DbTest {
 
     /**
      * 根据条件删除
-     * @throws Exception
      */
     @Test
-    public void deleteByConditionTest() throws Exception {
+    public void deleteByConditionTest() {
         DeleteStatement statement = badger.createDeteleStatement(Driver.class, "type=? and age=?");
         statement.addParam(TypeEnum.JOIN);
         statement.addParam(43);
@@ -148,10 +144,9 @@ public class DbTest {
 
     /**
      * 根据条件更新指定字段。
-     * @throws Exception
      */
     @Test
-    public void updateByConditionTest() throws Exception {
+    public void updateByConditionTest() {
         UpdateStatement statement = badger.createUpdateStatement(Order.class,
                 "money=?, update_date=?", "order_no=? and driver_id=?");
         statement.addParam(new BigDecimal("126"));
@@ -163,10 +158,9 @@ public class DbTest {
 
     /**
      * 根据条件查询，查询指定字段。
-     * @throws Exception
      */
     @Test
-    public void selectByConditionTest() throws Exception {
+    public void selectByConditionTest() {
         //根据条件查询所有字段
         Query<Driver> query = badger.createQuery(Driver.class, "driver_id >=1 and driver_id <= ?");
         query.addParam(14);
@@ -182,10 +176,9 @@ public class DbTest {
 
     /**
      * 分页查询
-     * @throws Exception
      */
     @Test
-    public void selectByPageTest() throws Exception {
+    public void selectByPageTest() {
         Query<Driver> query = badger.createQuery(Driver.class, "create_date >= ? and create_date <= ?");
         Date now = new Date();
         Date before = new Date(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(10));
@@ -205,10 +198,9 @@ public class DbTest {
 
     /**
      * 扩展表结构
-     * @throws Exception
      */
     @Test
-    public void selectExt() throws Exception {
+    public void selectExt() {
         Query<DriverExt> query = badger.createQuery(DriverExt.class, "avg(age) as avgAge, driver_id", "1=1 group by driver_id");
         List<DriverExt> driverExts = query.list();
         System.out.println(driverExts);
@@ -218,7 +210,7 @@ public class DbTest {
      * 自定义sql更新，不支持分库分表，分库分表信息得自己实现
      */
     @Test
-    public void updateBySelfDefine() throws Exception {
+    public void updateBySelfDefine() {
         UpdateSqlStatement sqlStatement = badger.createUpdateSqlStatement("update driver set update_date=? where driver_id=?");
         sqlStatement.addParam(new Date());
         sqlStatement.addParam(14);
@@ -229,7 +221,7 @@ public class DbTest {
      * 自定义sql查询，不支持分库分表，分库分表信息得自己实现，复杂sql查询可以拆分成多次单表查询。大表本身不建议join
      */
     @Test
-    public void selectBySelfDefine() throws Exception {
+    public void selectBySelfDefine() {
         SQLQuery<DriverOrder> query = badger.createSqlQuery(DriverOrder.class, "select a.driver_id,b.order_no from driver a join driver_order_1 b on a.driver_id=b.driver_id where a.driver_id=?");
         query.addParam(13);
         List<DriverOrder> driverOrders = query.list();

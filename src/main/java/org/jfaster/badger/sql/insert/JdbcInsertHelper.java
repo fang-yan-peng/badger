@@ -39,20 +39,19 @@ public class JdbcInsertHelper {
     /*
      * 插入记录，去除非空字段
      */
-    public static int insertNotNull(Object t, boolean ignore, Badger badger) throws Exception {
+    public static int insertNotNull(Object t, boolean ignore, Badger badger) {
         return execute(t, true, ShardUtils.shard(t, false), ignore, badger);
     }
 
     /*
      * 插入所有记录
      */
-    public static int insert(Object t, boolean ignore, Badger badger) throws
-            Exception {
+    public static int insert(Object t, boolean ignore, Badger badger) {
         return execute(t, false, ShardUtils.shard(t, false), ignore, badger);
     }
 
     private static int execute(Object t, boolean notNull, ShardResult shardRes,
-            boolean ignore, Badger badger) throws Exception {
+            boolean ignore, Badger badger) {
         String table = shardRes.getTableName();
         String dbName = shardRes.getDataSourceName();
         Class<?> clazz = t.getClass();
@@ -151,8 +150,7 @@ public class JdbcInsertHelper {
         }
     }
 
-    private static String logString(Object t, String sql, Class<?> clazz, Throwable e, boolean notNull)
-            throws Exception {
+    private static String logString(Object t, String sql, Class<?> clazz, Throwable e, boolean notNull) {
         StringBuilder sb = new StringBuilder();
         sb.append("执行sql='").append(sql);
         if (e != null) {

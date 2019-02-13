@@ -1,6 +1,5 @@
 package org.jfaster.badger.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +55,7 @@ public class ShardUtils {
         return shard(shardValue, shardInfo, res);
     }
 
-    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters, Badger badger)
-            throws IOException {
+    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters, Badger badger) {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
         ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
         List<String> conditionFields = conditionParse.getDynamicFields();
@@ -81,7 +79,7 @@ public class ShardUtils {
     }
 
     public static ShardResult shard(Class<?> clazz, String updateStatement, String condition,
-            List<Object> parameters, Badger badger) throws IOException {
+            List<Object> parameters, Badger badger) {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
         ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
         ParseResult updateParse = SQLParseUtils.parseUpdateStatement(clazz, updateStatement, badger);

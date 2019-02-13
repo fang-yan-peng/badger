@@ -25,9 +25,8 @@ public class JdbcDeleteHelper {
      * @param id
      * @param badger
      * @return
-     * @throws Exception
      */
-    public static <T> int deleteEntity(Class<T> clazz, Object id, Badger badger) throws Exception {
+    public static <T> int deleteEntity(Class<T> clazz, Object id, Badger badger) {
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
         ShardResult shardResult = ShardUtils.shard(clazz, id);
         String tableName = shardResult.getTableName();
@@ -46,7 +45,7 @@ public class JdbcDeleteHelper {
      * @return
      * @throws Exception
      */
-    public static <T> int deleteByCondition(Class<T> clazz, String condition, List<Object> parameters, Badger badger) throws Exception {
+    public static <T> int deleteByCondition(Class<T> clazz, String condition, List<Object> parameters, Badger badger) {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
         ShardResult shardResult = ShardUtils.shard(clazz, condition, parameters, badger);

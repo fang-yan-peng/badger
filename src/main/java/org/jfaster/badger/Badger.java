@@ -132,23 +132,23 @@ public class Badger extends Config {
 
     /**********************************db 操作**************************************/
 
-    public <T> int save(T t) throws Exception {
+    public <T> int save(T t) {
         return JdbcInsertHelper.insert(t, false, this);
     }
 
-    public <T> int saveIgnore(T t) throws Exception {
+    public <T> int saveIgnore(T t) {
         return JdbcInsertHelper.insert(t, true, this);
     }
 
-    public <T> int saveNotNull(T t) throws Exception {
+    public <T> int saveNotNull(T t) {
         return JdbcInsertHelper.insertNotNull(t, false, this);
     }
 
-    public <T> int saveNotNullIgnore(T t) throws Exception {
+    public <T> int saveNotNullIgnore(T t) {
         return JdbcInsertHelper.insertNotNull(t, true, this);
     }
 
-    public <T> int delete(Class<T> clazz, Object id) throws Exception {
+    public <T> int delete(Class<T> clazz, Object id) {
         return JdbcDeleteHelper.deleteEntity(clazz, id, this);
     }
 
@@ -156,7 +156,7 @@ public class Badger extends Config {
         return new DeleteStatementImpl(clazz, condition, this);
     }
 
-    public <T> int update(T t) throws Exception {
+    public <T> int update(T t) {
         return JdbcUpdateHelper.updateEntity(t, this);
     }
 
@@ -164,15 +164,15 @@ public class Badger extends Config {
         return new UpdateStatementImpl<>(clazz, updateStatement, condition, this);
     }
 
-    public UpdateSqlStatement createUpdateSqlStatement(String sql) throws Exception {
+    public UpdateSqlStatement createUpdateSqlStatement(String sql) {
         return new UpdateSqlStatementImpl(sql, this);
     }
 
-    public <T> T get(Class<T> clazz, Object id) throws Exception {
+    public <T> T get(Class<T> clazz, Object id) {
         return JdbcGetHelper.get(clazz, id, this, false);
     }
 
-    public <T> T get(Class<T> clazz, Object id, boolean useMaster) throws Exception {
+    public <T> T get(Class<T> clazz, Object id, boolean useMaster) {
         return JdbcGetHelper.get(clazz, id, this, useMaster);
     }
 

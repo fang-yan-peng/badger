@@ -36,7 +36,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Object obj) throws Exception {
+    public SQLQuery addParam(Object obj) {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -44,7 +44,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Object... objs) throws Exception {
+    public SQLQuery addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -56,7 +56,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Collection<Object> objs) throws Exception {
+    public SQLQuery addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -81,7 +81,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public List<T> list() throws Exception {
+    public List<T> list() {
         return JdbcSqlSelectHelper.find(clazz, sql,
                 Strings.isNullOrEmpty(dataSourceName) ? DEFULT_NAME : dataSourceName,
                 paramList, badger, useMaster);
