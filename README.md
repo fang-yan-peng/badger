@@ -83,8 +83,8 @@ public class Driver {
 
 ```java
 /**
-     * 插入，插入所有字段，插入非空字段。
-     */
+ * 插入，插入所有字段，插入非空字段。
+ */
 @Test
 public void insertTest() {
     Date now = new Date();
@@ -116,8 +116,8 @@ public void insertTest() {
 
 ```java
 /**
-     *  根据id删除。
-     */
+ *  根据id删除。
+ */
 @Test(expected = MappingException.class)
 public void deleteTest() throws Exception {
     badger.delete(Driver.class, 3);
@@ -128,8 +128,8 @@ public void deleteTest() throws Exception {
 
 ```java
 /**
-  * 根据条件删除
-  */
+ * 根据条件删除
+ */
 @Test
 public void deleteByConditionTest() {
     DeleteStatement statement = badger.createDeteleStatement(Driver.class, 
@@ -164,8 +164,8 @@ public void updateTest() {
 
 ```java
 /**
-  * 根据条件更新指定字段。
-  */
+ * 根据条件更新指定字段。
+ */
 @Test
 public void updateByConditionTest() {
     UpdateStatement statement = badger.createUpdateStatement(Order.class,
@@ -195,8 +195,8 @@ public void selectTest() {
 
 ```java
 /**
-  * 根据条件查询所有字段。
-  */
+ * 根据条件查询所有字段。
+ */
 @Test
 public void selectAllByConditionTest() {
     //根据条件查询所有字段
@@ -212,8 +212,8 @@ public void selectAllByConditionTest() {
 
 ```java
 /**
-  * 根据条件查询指定字段。
-  */
+ * 根据条件查询指定字段。
+ */
 @Test
 public void selectColumnsByConditionTest() {
     //根据条件查询指定字段
@@ -231,8 +231,8 @@ public void selectColumnsByConditionTest() {
 
 ```java
 /**
-  * 分页查询
-  */
+ * 分页查询
+ */
 @Test
 public void selectByPageTest() {
     Query<Driver> query = badger.createQuery(Driver.class, 
@@ -419,8 +419,8 @@ badger.setDataSourceFactory(new MasterSlaveDataSourceFactory(dataSource,Collecti
 
 ```java
 /**
-* 根据id更新所有字段。
-*/
+ * 根据id更新所有字段。
+ */
 @Test
 public void updateTest() {
     Driver driver = badger.get(Driver.class, 14, true);
