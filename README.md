@@ -410,7 +410,7 @@ config1.setMaximumPoolSize(10);
 
 HikariDataSource dataSource1 = new HikariDataSource(config);
 
-badger = Badger.newInstance();
+Badger badger = Badger.newInstance();
 badger.setDataSourceFactory(new MasterSlaveDataSourceFactory(dataSource,Collections.singletonList(dataSource1)));
 
 ```
