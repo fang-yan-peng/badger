@@ -445,7 +445,7 @@ public void selectByConditionTest() {
 ```
 
 ## 事务
-
+> Badger既实现了自己的事务管理，同时也支持spring的事务管理器，支持spring的事务传播机制。使用其中一种即可。
 ### Badger自身事务
 
 > 实现TransactionAction方法，在这个方法中把要执行的一系列事务操作放在其中。
