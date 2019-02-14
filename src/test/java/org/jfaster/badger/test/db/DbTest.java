@@ -247,7 +247,7 @@ public class DbTest {
     public void transactionTest() {
         TransactionTemplate.execute(status -> {
             badger.delete(Driver.class, 15);
-            //分库分表字段不是id则抛异常
+            //根据id删除，由于分库分表字段不是id则抛异常
             badger.delete(Order.class, "P224378961549867525895");
         });
     }
