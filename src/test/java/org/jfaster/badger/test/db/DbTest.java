@@ -172,6 +172,18 @@ public class DbTest {
         queryOrder.addParam(13); //根据driver_id分表必须带分表字段
         List<Order> orders = queryOrder.list();
         System.out.println(orders);
+
+        //like查询
+        Query<Driver> queryLike = badger.createQuery(Driver.class, "driver_name like ?");
+        queryLike.addParam("%叼蛋%");
+        drivers = queryLike.list();
+        System.out.println(drivers);
+
+        //in 查询
+        Query<Driver> queryIn = badger.createQuery(Driver.class, "driver_id in (?,?,?)");
+        queryIn.addParam(17).addParam(19).addParam(20);
+        drivers = queryIn.list();
+        System.out.println(drivers);
     }
 
     /**

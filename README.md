@@ -227,6 +227,25 @@ public void selectColumnsByConditionTest() {
 }
 ```
 
+### like和in查询
+
+```java
+@Test
+public void selectByConditionTest() {
+    //like查询
+    Query<Driver> queryLike = badger.createQuery(Driver.class, "driver_name like ?");
+    queryLike.addParam("%叼蛋%");
+    drivers = queryLike.list();
+    System.out.println(drivers);
+
+    //in 查询
+    Query<Driver> queryIn = badger.createQuery(Driver.class, "driver_id in (?,?,?)");
+    queryIn.addParam(17).addParam(19).addParam(20);
+    drivers = queryIn.list();
+    System.out.println(drivers);
+}
+```
+
 ### 分页查询
 
 ```java
