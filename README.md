@@ -235,7 +235,7 @@ public void selectByConditionTest() {
     //like查询
     Query<Driver> queryLike = badger.createQuery(Driver.class, "driver_name like ?");
     queryLike.addParam("%叼蛋%");
-    drivers = queryLike.list();
+    List<Driver> drivers = queryLike.list();
     System.out.println(drivers);
 
     //in 查询
