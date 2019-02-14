@@ -702,7 +702,7 @@ public class DriverOrder {
 public void selectBySelfDefine() {
     SQLQuery<DriverOrder> query = badger.createSqlQuery(DriverOrder.class, "select a.driver_id,b.order_no from driver a join driver_order_1 b on a.driver_id=b.driver_id where a.driver_id=?");
     query.addParam(13);
-    //query.query.setDataSourceName("xx"); 如果分库需要自己指定。
+    //query.setDataSourceName("xx"); 如果分库需要自己指定。
     List<DriverOrder> driverOrders = query.list();
     System.out.println(driverOrders);
 }
