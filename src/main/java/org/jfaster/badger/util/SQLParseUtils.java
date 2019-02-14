@@ -23,7 +23,7 @@ import org.jfaster.badger.sql.parse.BadgerSqlParser;
 /**
  * sql转化工具
  * @author yanpengfang
- * @create 2019-01-14 6:15 PM
+ * create 2019-01-14 6:15 PM
  */
 public class SQLParseUtils {
 

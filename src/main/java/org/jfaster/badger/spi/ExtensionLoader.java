@@ -24,7 +24,6 @@ import org.jfaster.badger.util.Strings;
 /**
  * spi类加载器，接口需要@Spi注解，实现类需要@SpiInfo注解
  *
- * Created by fangyanpeng1 on 2017/7/28.
  */
 @SuppressWarnings("ALL")
 public class ExtensionLoader<T> {

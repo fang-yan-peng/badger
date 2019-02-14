@@ -7,7 +7,7 @@ import org.jfaster.badger.exception.BadgerException;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-08 8:51 PM
+ * create 2019-01-08 8:51 PM
  */
 public class NotShardStrategy implements TableShardStrategy, DataSourceShardStrategy {
     @Override

@@ -86,22 +86,42 @@ public class Badger extends Config {
     }
 
     /*************实例化相关*****************/
+    /**
+     *
+     * @param dataSource
+     * @return
+     */
     public static Badger newInstance(DataSource dataSource) {
         Badger badger = newInstance();
         badger.setDataSource(dataSource);
         return badger;
     }
 
+    /**
+     *
+     * @param dataSourceFactory
+     * @return
+     */
     public static Badger newInstance(DataSourceFactory dataSourceFactory) {
         Badger badger = newInstance();
         badger.setDataSourceFactory(dataSourceFactory);
         return badger;
     }
 
+    /**
+     *
+     * @param dataSourceFactories
+     * @return
+     */
     public static Badger newInstance(DataSourceFactory... dataSourceFactories) {
         return newInstance(Arrays.asList(dataSourceFactories));
     }
 
+    /**
+     *
+     * @param dataSourceFactories
+     * @return
+     */
     public static Badger newInstance(List<DataSourceFactory> dataSourceFactories) {
         Badger badger = newInstance();
         badger.setDataSourceFactories(dataSourceFactories);
@@ -132,58 +152,152 @@ public class Badger extends Config {
 
     /**********************************db 操作**************************************/
 
+    /**
+     * 保存所有字段
+     * @param t
+     * @param <T>
+     * @return
+     */
     public <T> int save(T t) {
         return JdbcInsertHelper.insert(t, false, this);
     }
 
+    /**
+     * 保存所有字段 忽略唯一索引冲突
+     * @param t
+     * @param <T>
+     * @return
+     */
     public <T> int saveIgnore(T t) {
         return JdbcInsertHelper.insert(t, true, this);
     }
 
+    /**
+     * 保存非空字段
+     * @param t
+     * @param <T>
+     * @return
+     */
     public <T> int saveNotNull(T t) {
         return JdbcInsertHelper.insertNotNull(t, false, this);
     }
 
+    /**
+     * 保存非空字段 忽略唯一索引
+     * @param t
+     * @param <T>
+     * @return
+     */
     public <T> int saveNotNullIgnore(T t) {
         return JdbcInsertHelper.insertNotNull(t, true, this);
     }
 
+    /**
+     * 根据id删除
+     * @param clazz
+     * @param id
+     * @param <T>
+     * @return
+     */
     public <T> int delete(Class<T> clazz, Object id) {
         return JdbcDeleteHelper.deleteEntity(clazz, id, this);
     }
 
+    /**
+     * 根据条件删除
+     * @param clazz
+     * @param condition
+     * @param <T>
+     * @return
+     */
     public <T> DeleteStatement createDeteleStatement(Class<T> clazz, String condition) {
         return new DeleteStatementImpl(clazz, condition, this);
     }
 
+    /**
+     * 更新所有字段
+     * @param t
+     * @param <T>
+     * @return
+     */
     public <T> int update(T t) {
         return JdbcUpdateHelper.updateEntity(t, this);
     }
 
+    /**
+     * 根据条件更新指定字段
+     * @param clazz
+     * @param updateStatement
+     * @param condition
+     * @param <T>
+     * @return
+     */
     public <T> UpdateStatement createUpdateStatement(Class<T> clazz, String updateStatement, String condition) {
         return new UpdateStatementImpl<>(clazz, updateStatement, condition, this);
     }
 
+    /**
+     * 自定义sql
+     * @param sql
+     * @return
+     */
     public UpdateSqlStatement createUpdateSqlStatement(String sql) {
         return new UpdateSqlStatementImpl(sql, this);
     }
 
+    /**
+     * 根据id获取
+     * @param clazz
+     * @param id
+     * @param <T>
+     * @return
+     */
     public <T> T get(Class<T> clazz, Object id) {
         return JdbcGetHelper.get(clazz, id, this, false);
     }
 
+    /**
+     * 根据id获取 可以指定是否强制走主库
+     * @param clazz
+     * @param id
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
     public <T> T get(Class<T> clazz, Object id, boolean useMaster) {
         return JdbcGetHelper.get(clazz, id, this, useMaster);
     }
 
+    /**
+     * 根据条件查询指定字段
+     * @param clazz
+     * @param columns
+     * @param condition
+     * @param <T>
+     * @return
+     */
     public <T> Query<T> createQuery(Class<T> clazz, String columns, String condition) {
         return new QueryImpl<>(clazz, columns, condition, this);
     }
 
+    /**
+     * 根据条件查询所有字段
+     * @param clazz
+     * @param condition
+     * @param <T>
+     * @return
+     */
     public <T> Query<T> createQuery(Class<T> clazz, String condition) {
         return new QueryImpl<>(clazz, condition, this);
     }
 
+    /**
+     * 自定义查询
+     * @param clazz
+     * @param sql
+     * @param <T>
+     * @return
+     */
     public <T> SQLQuery<T> createSqlQuery(Class<T> clazz, String sql) {
         return new SQLQueryImpl<>(sql, this, clazz);
     }

@@ -15,7 +15,7 @@ import org.jfaster.badger.util.SqlUtils;
 /**
  * 根据id查询
  * @author yanpengfang
- * @create 2019-01-25 9:28 PM
+ * create 2019-01-25 9:28 PM
  */
 public class JdbcGetHelper {
 
@@ -23,6 +23,15 @@ public class JdbcGetHelper {
 
     private static Long long0 = 0L;
 
+    /**
+     *
+     * @param clazz
+     * @param id
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
     public static <T> T get(Class<T> clazz, Object id, Badger badger, boolean useMaster) {
         if (id == null) {
             return null;

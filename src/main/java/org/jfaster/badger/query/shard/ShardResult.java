@@ -10,7 +10,7 @@ import lombok.Data;
 /**
  * 分库分表 结果
  * @author yanpengfang
- * @create 2019-01-15 9:50 PM
+ * create 2019-01-15 9:50 PM
  */
 @Data
 public class ShardResult {

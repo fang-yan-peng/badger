@@ -15,7 +15,7 @@ import org.jfaster.badger.util.SqlUtils;
 /**
  * update 辅助类
  * @author yanpengfang
- * @create 2019-01-19 5:02 PM
+ * create 2019-01-19 5:02 PM
  */
 public class JdbcUpdateHelper {
 

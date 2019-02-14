@@ -3,7 +3,7 @@ package org.jfaster.badger.jdbc.type.convert;
 /**
  * int数组和string之间转化
  * @author yanpengfang
- * @create 2019-01-07 11:47 AM
+ * create 2019-01-07 11:47 AM
  */
 @SuppressWarnings("ALL")
 public class IntArrayStringConverter implements TypeConverter<int[], String> {

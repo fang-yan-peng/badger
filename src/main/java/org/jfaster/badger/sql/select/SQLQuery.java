@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 原生sql
  * @author yanpengfang
- * @create 2019-01-29 11:30 PM
+ * create 2019-01-29 11:30 PM
  */
 public interface SQLQuery<T> {
     /*

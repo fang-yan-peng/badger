@@ -3,7 +3,7 @@ package org.jfaster.badger.util;
 /**
  * string 相关工具类
  * @author yanpengfang
- * @create 2019-01-03 8:53 PM
+ * create 2019-01-03 8:53 PM
  */
 public class Strings {
 

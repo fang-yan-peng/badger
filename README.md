@@ -14,7 +14,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 </dependency>
 ```
 
@@ -475,12 +475,17 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger-spring-transaction</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.1.4.RELEASE</version>
 </dependency>
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 </dependency>
 ```
 

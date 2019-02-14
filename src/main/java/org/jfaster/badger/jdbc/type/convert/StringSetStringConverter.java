@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 12:03 PM
+ * create 2019-01-07 12:03 PM
  */
 @SuppressWarnings("ALL")
 public class StringSetStringConverter implements TypeConverter<Set<String>, String> {

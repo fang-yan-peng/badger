@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * 分库分表标识
  * @author yanpengfang
- * @create 2019-01-04 8:58 PM
+ * create 2019-01-04 8:58 PM
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-29 11:44 AM
+ * create 2019-01-29 11:44 AM
  */
 abstract class TransformedIterator<F, T> implements Iterator<T> {
     final Iterator<? extends F> backingIterator;

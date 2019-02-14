@@ -10,7 +10,7 @@ import org.jfaster.badger.util.CheckConditions;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-31 3:08 PM
+ * create 2019-01-31 3:08 PM
  */
 public class UpdateStatementImpl<T> implements UpdateStatement {
 

@@ -3,7 +3,7 @@ package org.jfaster.badger.query.shard;
 /**
  * 数据源路由
  * @author yanpengfang
- * @create 2019-01-08 8:49 PM
+ * create 2019-01-08 8:49 PM
  */
 public interface DataSourceShardStrategy<T> {
     /**

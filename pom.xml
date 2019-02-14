@@ -7,11 +7,12 @@
 
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>badger</name>
 
     <url>https://github.com/fang-yan-peng/badger</url>
+    <description>simple dao framework</description>
 
     <licenses>
         <license>
@@ -36,7 +37,6 @@
             <timezone>8</timezone>
         </developer>
     </developers>
-
 
 
     <properties>
@@ -143,6 +143,9 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <configuration>
+                                    <additionalparam>-Xdoclint:-missing</additionalparam>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

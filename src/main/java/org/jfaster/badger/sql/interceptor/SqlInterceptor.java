@@ -3,7 +3,7 @@ package org.jfaster.badger.sql.interceptor;
 /**
  * sql 执行拦截器
  * @author yanpengfang
- * @create 2019-01-11 6:46 PM
+ * create 2019-01-11 6:46 PM
  */
 public interface SqlInterceptor {
 

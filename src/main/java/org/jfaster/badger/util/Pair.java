@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-19 4:39 PM
+ * create 2019-01-19 4:39 PM
  */
 @Data
 @RequiredArgsConstructor

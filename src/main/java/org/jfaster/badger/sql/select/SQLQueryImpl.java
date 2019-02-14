@@ -13,7 +13,7 @@ import org.jfaster.badger.util.Strings;
 /**
  * SQLQuery
  * @author yanpengfang
- * @create 2019-01-30 11:54 PM
+ * create 2019-01-30 11:54 PM
  */
 public class SQLQueryImpl<T> implements SQLQuery<T> {
 

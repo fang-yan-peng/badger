@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-22 2:43 PM
+ * create 2019-01-22 2:43 PM
  */
 public class JdbcHelper {
 

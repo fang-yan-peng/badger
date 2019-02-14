@@ -12,7 +12,7 @@ import org.jfaster.badger.jdbc.JdbcType;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-06 11:58 AM
+ * create 2019-01-06 11:58 AM
  */
 public class TypeHandlerRegistry {
     private static final Map<Type, Map<JdbcType, TypeHandler<?>>> TYPE_HANDLER_MAP = new HashMap<Type, Map<JdbcType, TypeHandler<?>>>();

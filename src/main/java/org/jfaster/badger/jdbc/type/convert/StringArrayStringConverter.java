@@ -3,7 +3,7 @@ package org.jfaster.badger.jdbc.type.convert;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 1:48 PM
+ * create 2019-01-07 1:48 PM
  */
 @SuppressWarnings("ALL")
 public class StringArrayStringConverter implements TypeConverter<String[], String> {

@@ -15,7 +15,7 @@ import org.jfaster.badger.sql.ParseResult;
 /**
  * 分库分表工具
  * @author yanpengfang
- * @create 2019-01-16 3:31 PM
+ * create 2019-01-16 3:31 PM
  */
 public class ShardUtils {
 

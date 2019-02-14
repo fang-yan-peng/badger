@@ -11,7 +11,7 @@ import org.jfaster.badger.util.Strings;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-29 10:27 PM
+ * create 2019-01-29 10:27 PM
  */
 public class QueryImpl<T> implements Query<T> {
 

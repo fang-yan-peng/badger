@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-12 12:14 PM
+ * create 2019-01-12 12:14 PM
  */
 @Data
 public class InsertResult {

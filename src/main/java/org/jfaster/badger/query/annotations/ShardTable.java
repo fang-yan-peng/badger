@@ -14,7 +14,7 @@ import org.jfaster.badger.query.shard.TableShardStrategy;
 /**
  * 分库分表标示
  * @author yanpengfang
- * @create 2019-01-04 9:10 PM
+ * create 2019-01-04 9:10 PM
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

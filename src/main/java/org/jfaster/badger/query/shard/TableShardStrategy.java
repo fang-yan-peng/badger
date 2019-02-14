@@ -4,7 +4,7 @@ import java.util.List;
 /**
  * 分表策略
  * @author yanpengfang
- * @create 2019-01-04 9:24 PM
+ * create 2019-01-04 9:24 PM
  */
 public interface TableShardStrategy<T> {
 

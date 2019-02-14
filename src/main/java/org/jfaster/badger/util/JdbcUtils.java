@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * jdbc工具类
  * @author yanpengfang
- * @create 2019-01-11 9:31 PM
+ * create 2019-01-11 9:31 PM
  */
 public class JdbcUtils {
     protected static final Log logger = LogFactory.getLog(JdbcUtils.class);

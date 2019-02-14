@@ -16,7 +16,7 @@ import org.jfaster.badger.util.ShardUtils;
 /**
  * 查询辅助类
  * @author yanpengfang
- * @create 2019-01-27 1:54 PM
+ * create 2019-01-27 1:54 PM
  */
 public class JdbcSelectHelper {
     /**

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 12:03 PM
+ * create 2019-01-07 12:03 PM
  */
 @SuppressWarnings("ALL")
 public class IntegerListStringConverter implements TypeConverter<List<Integer>, String> {

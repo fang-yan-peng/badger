@@ -14,7 +14,7 @@ import org.jfaster.badger.util.Strings;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-31 3:08 PM
+ * create 2019-01-31 3:08 PM
  */
 public class UpdateSqlStatementImpl implements UpdateSqlStatement {
 

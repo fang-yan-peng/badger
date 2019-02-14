@@ -5,7 +5,7 @@ import java.util.ListIterator;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-29 11:44 AM
+ * create 2019-01-29 11:44 AM
  */
 abstract class TransformedListIterator<F, T> extends TransformedIterator<F, T>
         implements ListIterator<T> {

@@ -11,7 +11,7 @@ import org.jfaster.badger.jdbc.datasource.support.AbstractDataSourceFactory;
 /**
  * 表名
  * @author yanpengfang
- * @create 2019-01-04 9:09 PM
+ * create 2019-01-04 9:09 PM
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

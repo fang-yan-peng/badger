@@ -3,7 +3,7 @@ package org.jfaster.badger.jdbc.type.convert;
 /**
  * Enum <-> String
  * @author yanpengfang
- * @create 2019-01-07 2:40 PM
+ * create 2019-01-07 2:40 PM
  */
 public class EnumStringConverter implements TypeConverter<Enum, String> {
 

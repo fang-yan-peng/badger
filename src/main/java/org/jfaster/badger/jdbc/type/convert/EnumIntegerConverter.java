@@ -8,7 +8,7 @@ import org.jfaster.badger.cache.support.DoubleCheckCache;
 /**
  * 枚举与整型间相互转换
  * @author yanpengfang
- * @create 2019-01-07 2:09 PM
+ * create 2019-01-07 2:09 PM
  */
 public class EnumIntegerConverter implements TypeConverter<Enum, Integer> {
 

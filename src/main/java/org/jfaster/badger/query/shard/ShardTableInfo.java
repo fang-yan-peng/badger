@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 分库、分表信息
  * @author yanpengfang
- * @create 2019-01-08 8:39 PM
+ * create 2019-01-08 8:39 PM
  */
 @Data
 public class ShardTableInfo {

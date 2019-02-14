@@ -3,7 +3,7 @@ package org.jfaster.badger.exception;
 /**
  * 框架统一异常
  * @author yanpengfang
- * @create 2019-01-03 8:46 PM
+ * create 2019-01-03 8:46 PM
  */
 public class BadgerException extends RuntimeException {
 

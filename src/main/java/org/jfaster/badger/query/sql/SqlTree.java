@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * sql树 存储表达式信息
  * @author yanpengfang
- * @create 2019-01-03 10:44 AM
+ * create 2019-01-03 10:44 AM
  */
 @Data
 public class SqlTree {

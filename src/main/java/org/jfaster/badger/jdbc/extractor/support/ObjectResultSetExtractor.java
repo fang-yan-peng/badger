@@ -16,6 +16,12 @@ public class ObjectResultSetExtractor<T> implements ResultSetExtractor<T> {
     this.rowMapper = rowMapper;
   }
 
+  /**
+   *
+   * @param rs
+   * @return
+   * @throws SQLException
+   */
   @Override
   public T extractData(ResultSet rs) throws SQLException {
     Class<T> mappedClass = rowMapper.getMappedClass();

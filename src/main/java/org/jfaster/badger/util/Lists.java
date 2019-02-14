@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * list 工具类
  * @author yanpengfang
- * @create 2019-01-29 11:40 AM
+ * create 2019-01-29 11:40 AM
  */
 public class Lists {
 

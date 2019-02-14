@@ -10,10 +10,21 @@ import org.jfaster.badger.sql.JdbcHelper;
 /**
  * 原生查询sql
  * @author yanpengfang
- * @create 2019-01-29 11:16 PM
+ * create 2019-01-29 11:16 PM
  */
 public class JdbcSqlSelectHelper {
 
+    /**
+     *
+     * @param clazz
+     * @param sql
+     * @param dbName
+     * @param paramList
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> find(Class<T> clazz, String sql,
             String dbName, List<Object> paramList,
             Badger badger, boolean useMaster) {

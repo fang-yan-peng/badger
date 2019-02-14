@@ -15,7 +15,7 @@ import org.jfaster.badger.util.SqlUtils;
 /**
  * delete 辅助类
  * @author yanpengfang
- * @create 2019-01-13 10:11 PM
+ * create 2019-01-13 10:11 PM
  */
 public class JdbcDeleteHelper {
 
@@ -43,7 +43,6 @@ public class JdbcDeleteHelper {
      * @param parameters
      * @param badger
      * @return
-     * @throws Exception
      */
     public static <T> int deleteByCondition(Class<T> clazz, String condition, List<Object> parameters, Badger badger) {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");

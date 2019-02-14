@@ -5,7 +5,7 @@ import org.jfaster.badger.exception.BadgerException;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 4:47 PM
+ * create 2019-01-07 4:47 PM
  */
 public class NotConverter implements TypeConverter {
     @Override

@@ -10,7 +10,7 @@ import org.jfaster.badger.util.SqlUtils;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-27 12:16 PM
+ * create 2019-01-27 12:16 PM
  */
 public class RowMapplerRegistry {
 

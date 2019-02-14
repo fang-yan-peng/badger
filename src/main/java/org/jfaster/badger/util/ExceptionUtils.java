@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-13 12:28 AM
+ * create 2019-01-13 12:28 AM
  */
 public class ExceptionUtils {
 

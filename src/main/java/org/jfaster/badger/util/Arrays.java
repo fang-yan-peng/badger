@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * arrays 工具类
  * @author yanpengfang
- * @create 2019-01-07 6:24 PM
+ * create 2019-01-07 6:24 PM
  */
 public class Arrays {
     public static <T> Object toArray(List<T> list, Class<T> clazz) {

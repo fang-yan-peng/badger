@@ -30,21 +30,29 @@ import org.slf4j.LoggerFactory;
 /**
  * 插入辅助类
  * @author yanpengfang
- * @create 2019-01-11 6:40 PM
+ * create 2019-01-11 6:40 PM
  */
 public class JdbcInsertHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcInsertHelper.class);
 
-    /*
+    /**
      * 插入记录，去除非空字段
+     * @param t
+     * @param ignore
+     * @param badger
+     * @return
      */
     public static int insertNotNull(Object t, boolean ignore, Badger badger) {
         return execute(t, true, ShardUtils.shard(t, false), ignore, badger);
     }
 
-    /*
+    /**
      * 插入所有记录
+     * @param t
+     * @param ignore
+     * @param badger
+     * @return
      */
     public static int insert(Object t, boolean ignore, Badger badger) {
         return execute(t, false, ShardUtils.shard(t, false), ignore, badger);

@@ -3,7 +3,7 @@ package org.jfaster.badger.query;
 /**
  * 解析映射关系
  * @author yanpengfang
- * @create 2019-01-03 10:43 AM
+ * create 2019-01-03 10:43 AM
  */
 public interface Mapping {
 

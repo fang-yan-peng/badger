@@ -10,7 +10,7 @@ import lombok.Data;
 /**
  * 主从数据源工厂
  * @author yanpengfang
- * @create 2019-01-16 2:15 PM
+ * create 2019-01-16 2:15 PM
  */
 @Data
 public class MasterSlaveDataSourceFactory extends AbstractDataSourceFactory {

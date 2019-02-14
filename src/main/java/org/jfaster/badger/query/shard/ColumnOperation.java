@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-04 9:03 PM
+ * create 2019-01-04 9:03 PM
  */
 @Data
 public class ColumnOperation {

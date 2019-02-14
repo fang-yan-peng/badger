@@ -16,7 +16,7 @@ import org.jfaster.badger.util.Strings;
 /**
  * mysql数据库构造sql
  * @author yanpengfang
- * @create 2019-01-03 9:45 PM
+ * create 2019-01-03 9:45 PM
  */
 @SuppressWarnings("ALL")
 @SpiMeta(name = "mysql")
@@ -34,7 +34,6 @@ public class MysqlDialect implements Dialect {
      * @param t
      * @param ignore
      * @return
-     * @throws Exception
      */
     @Override
     public InsertResult insertSqlNotNull(Object t, boolean ignore) {
@@ -47,7 +46,6 @@ public class MysqlDialect implements Dialect {
      * @param tableName
      * @param ignore
      * @return
-     * @throws Exception
      */
     @Override
     public InsertResult insertSqlNotNull(Object t, String tableName, boolean ignore) {
@@ -96,7 +94,6 @@ public class MysqlDialect implements Dialect {
      * @param t
      * @param ignore
      * @return
-     * @throws Exception
      */
     @Override
     public InsertResult insertSql(Object t, boolean ignore) {
@@ -156,7 +153,6 @@ public class MysqlDialect implements Dialect {
      * @param tableName
      * @param ignore
      * @return
-     * @throws Exception
      */
     @Override
     public InsertResult insertSql(Object t, String tableName, boolean ignore) {
@@ -200,7 +196,6 @@ public class MysqlDialect implements Dialect {
      * 更加唯一主键查询
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String getSql(Class<?> clazz) {
@@ -243,7 +238,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String getSql(Class<?> clazz, String tableName) {
@@ -281,7 +275,6 @@ public class MysqlDialect implements Dialect {
      * 根据主键删除
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String deleteEntitySql(Class<?> clazz) {
@@ -314,7 +307,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String deleteEntitySql(Class<?> clazz, String tableName) {
@@ -342,7 +334,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param condition
      * @return
-     * @throws Exception
      */
     @Override
     public String deleteConditionSql(Class<?> clazz, String condition) {
@@ -361,7 +352,6 @@ public class MysqlDialect implements Dialect {
      * @param condition
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String deleteConditionSql(Class<?> clazz, String condition, String tableName) {
@@ -378,7 +368,6 @@ public class MysqlDialect implements Dialect {
      * 根据id更新所有字段
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String updateEntitySql(Class<?> clazz) {
@@ -424,7 +413,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String updateEntitySql(Class<?> clazz, String tableName) {
@@ -459,6 +447,13 @@ public class MysqlDialect implements Dialect {
         return sbSql.toString();
     }
 
+    /**
+     *
+     * @param clazz
+     * @param updateStatement
+     * @param condition
+     * @return
+     */
     @Override
     public String updateSql(Class<?> clazz, String updateStatement, String condition) {
         StringBuilder sbSql = new StringBuilder("UPDATE `");
@@ -470,6 +465,14 @@ public class MysqlDialect implements Dialect {
         return sbSql.toString();
     }
 
+    /**
+     *
+     * @param clazz
+     * @param updateStatement
+     * @param condition
+     * @param tableName
+     * @return
+     */
     @Override
     public String updateSql(Class<?> clazz, String updateStatement, String condition, String tableName) {
         StringBuilder sbSql = new StringBuilder("UPDATE `");
@@ -485,7 +488,6 @@ public class MysqlDialect implements Dialect {
      * 查询所有，谨慎使用
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String selectAllSql(Class<?> clazz) {
@@ -516,7 +518,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String selectAllSql(Class<?> clazz, String tableName) {
@@ -540,7 +541,6 @@ public class MysqlDialect implements Dialect {
      * 查询所有谨慎使用
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String selectSql(Class<?> clazz, String columns) {
@@ -556,7 +556,6 @@ public class MysqlDialect implements Dialect {
      * @param clazz
      * @param tableName
      * @return
-     * @throws Exception
      */
     @Override
     public String selectSql(Class<?> clazz, String columns, String tableName) {
@@ -571,7 +570,6 @@ public class MysqlDialect implements Dialect {
      * 计数
      * @param clazz
      * @return
-     * @throws Exception
      */
     @Override
     public String countSql(Class<?> clazz) {
@@ -586,6 +584,12 @@ public class MysqlDialect implements Dialect {
         return sql;
     }
 
+    /**
+     *
+     * @param clazz
+     * @param condition
+     * @return
+     */
     @Override
     public String countSql(Class<?> clazz, String condition) {
         if (Strings.isNullOrEmpty(condition)) {
@@ -603,7 +607,6 @@ public class MysqlDialect implements Dialect {
      * @param tableName
      * @param condition
      * @return
-     * @throws Exception
      */
     @Override
     public String countSql(Class<?> clazz, String tableName, String condition) {
@@ -619,7 +622,6 @@ public class MysqlDialect implements Dialect {
      * @param start
      * @param max
      * @return
-     * @throws Exception
      */
     @Override
     public String getPageSql(String sql, int pageIndex, int pageSize) {

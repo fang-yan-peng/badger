@@ -6,7 +6,6 @@ import lombok.Getter;
 
 /**
  * @author Clinton Begin
- * @author ash
  */
 public class PropertyTokenizer {
 

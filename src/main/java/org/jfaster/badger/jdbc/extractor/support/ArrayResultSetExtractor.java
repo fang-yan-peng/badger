@@ -17,6 +17,12 @@ public class ArrayResultSetExtractor<T> implements ResultSetExtractor<Object> {
     this.rowMapper = rowMapper;
   }
 
+  /**
+   *
+   * @param rs
+   * @return
+   * @throws SQLException
+   */
   @Override
   public Object extractData(ResultSet rs) throws SQLException {
     List<T> list = new ArrayList<>();

@@ -12,7 +12,7 @@ import org.jfaster.badger.jdbc.type.convert.TypeConverter;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-04 8:45 PM
+ * create 2019-01-04 8:45 PM
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

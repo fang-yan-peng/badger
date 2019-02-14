@@ -17,6 +17,12 @@ public class ListResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
     this.rowMapper = rowMapper;
   }
 
+  /**
+   *
+   * @param rs
+   * @return
+   * @throws SQLException
+   */
   @Override
   public List<T> extractData(ResultSet rs) throws SQLException {
     List<T> results = new LinkedList<>();

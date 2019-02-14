@@ -11,7 +11,7 @@ import org.jfaster.badger.jdbc.type.TypeHandlerRegistry;
 /**
  * 单列RowMapper
  * @author yanpengfang
- * @create 2019-01-07 3:48 PM
+ * create 2019-01-07 3:48 PM
  */
 public class SingleColumnRowMapper<T> implements RowMapper<T> {
 

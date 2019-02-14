@@ -5,7 +5,7 @@ import org.jfaster.badger.jdbc.datasource.DataSourceFactory;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-16 2:24 PM
+ * create 2019-01-16 2:24 PM
  */
 public abstract class AbstractDataSourceFactory implements DataSourceFactory {
 

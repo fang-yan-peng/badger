@@ -9,7 +9,7 @@ import org.jfaster.badger.spi.Spi;
 /**
  * 连接管理器
  * @author yanpengfang
- * @create 2019-02-12 9:42 PM
+ * create 2019-02-12 9:42 PM
  */
 @Spi
 public interface ConnectionManager {

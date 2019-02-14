@@ -5,7 +5,7 @@ import org.jfaster.badger.exception.BeanInstantiationException;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 6:31 PM
+ * create 2019-01-07 6:31 PM
  */
 public class Reflections {
     public static <T> T instantiate(Class<T> clazz) throws BeanInstantiationException {

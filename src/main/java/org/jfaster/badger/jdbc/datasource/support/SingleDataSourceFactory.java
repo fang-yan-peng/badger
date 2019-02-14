@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 单一数据源
  * @author yanpengfang
- * @create 2019-01-16 2:30 PM
+ * create 2019-01-16 2:30 PM
  */
 @Data
 public class SingleDataSourceFactory extends AbstractDataSourceFactory {

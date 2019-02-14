@@ -5,7 +5,7 @@ import org.jfaster.badger.spi.Spi;
 /**
  * 数据库sql 统一接口
  * @author yanpengfang
- * @create 2019-01-03 9:42 PM
+ * create 2019-01-03 9:42 PM
  */
 @Spi
 public interface Dialect {

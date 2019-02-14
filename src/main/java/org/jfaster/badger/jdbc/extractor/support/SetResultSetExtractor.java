@@ -18,6 +18,12 @@ public class SetResultSetExtractor<T> implements ResultSetExtractor<Set<T>> {
     this.rowMapper = rowMapper;
   }
 
+  /**
+   *
+   * @param rs
+   * @return
+   * @throws SQLException
+   */
   @Override
   public Set<T> extractData(ResultSet rs) throws SQLException {
     Set<T> results = setSupplier.get(rowMapper.getMappedClass());

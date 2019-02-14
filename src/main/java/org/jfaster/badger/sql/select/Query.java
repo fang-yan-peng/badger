@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 查询条件
  * @author yanpengfang
- * @create 2019-01-29 10:26 PM
+ * create 2019-01-29 10:26 PM
  */
 public interface Query<T> {
     /*

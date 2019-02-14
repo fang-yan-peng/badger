@@ -9,7 +9,7 @@ import java.util.List;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 2:37 PM
+ * create 2019-01-07 2:37 PM
  */
 public class ResultSetWrapper {
 

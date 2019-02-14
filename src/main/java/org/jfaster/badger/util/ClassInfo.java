@@ -30,7 +30,7 @@ import lombok.Data;
 /**
  * class 信息
  * @author yanpengfang
- * @create 2019-01-07 10:01 PM
+ * create 2019-01-07 10:01 PM
  */
 @Data
 public class ClassInfo {

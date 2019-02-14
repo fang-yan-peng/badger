@@ -3,7 +3,7 @@ package org.jfaster.badger.util;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-07 11:53 AM
+ * create 2019-01-07 11:53 AM
  */
 public class CheckConditions {
 

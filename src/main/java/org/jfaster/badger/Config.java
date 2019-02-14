@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * badger dao 配置相关
  * @author yanpengfang
- * @create 2019-01-02 9:36 PM
+ * create 2019-01-02 9:36 PM
  */
 @Data
 public class Config {

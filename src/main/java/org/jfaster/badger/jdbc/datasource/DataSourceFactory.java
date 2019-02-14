@@ -5,7 +5,7 @@ import javax.sql.DataSource;
 /**
  *
  * @author yanpengfang
- * @create 2019-01-16 2:23 PM
+ * create 2019-01-16 2:23 PM
  */
 public interface DataSourceFactory {
     String getName();
