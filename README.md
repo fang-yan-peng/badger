@@ -76,7 +76,7 @@ public class Driver {
 
 }
 ```
-
+> Table注解有tableName属性如果不知道默认是类型转下划线，dataSourceName用于指定数据源工厂名称，如果是单库不用指定，如果是多库需要指定，指定注册到badger里的数据源工厂名称，见下文。
 > Column注解的name属性可以指定与数据库字段对应关系，如果不写默认是驼峰转下划线，convert属性是将bean的类型映射成数据库的类型，如果需要可以实现TypeConverter接口自行定义，默认提供EnumIntegerConverter、EnumStringConverter、FastJsonObjectConverter、IntArrayStringConverter、IntegerListStringConverter、IntegerSetStringConverter、StringArrayStringConverter、StringListStringConverter、StringSetStringConverter等。
 
 ## 插入
