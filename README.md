@@ -106,9 +106,15 @@ public void insertTest() {
     //保存数据并且回填自增主键id
     badger.save(driver);
     System.out.println("司机ID:" + driver.getDriverId());
+    
+    //忽略唯一索引冲突
+    badger.saveIgnore(driver);
+    System.out.println("司机ID:" + driver.getDriverId());
 }
 
 ```
+
+> badger还提供了saveIgnore方法，用于忽略唯一索引冲突
 
 ## 删除
 
