@@ -12,23 +12,23 @@ public interface Query<T> {
     /*
      * 添加参数
      */
-    Query addParam(Object obj);
+    Query<T> addParam(Object obj);
 
     /*
      * 添加参数
      */
-    Query addParam(Object... objs);
+    Query<T> addParam(Object... objs);
 
     /*
      * 添加参数
      */
-    Query addParam(Collection<Object> objs);
+    Query<T> addParam(Collection<Object> objs);
 
     /**
      * 强制使用master
      * @return
      */
-    Query userMaster();
+    Query<T> userMaster();
 
     /*
      * 返回列表
@@ -43,11 +43,16 @@ public interface Query<T> {
     /*
      * 设置结果集大小
      */
-    Query setPageSize(int pageSize);
+    Query<T> setPageSize(int pageSize);
 
     /*
      * 设置页码
      */
-    Query setPageIndex(int pageIndex);
+    Query<T> setPageIndex(int pageIndex);
+
+    /*
+     * 返回单个bean
+     */
+    T getOne() ;
 
 }

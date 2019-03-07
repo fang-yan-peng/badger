@@ -36,7 +36,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Object obj) {
+    public SQLQuery<T> addParam(Object obj) {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -44,7 +44,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Object... objs) {
+    public SQLQuery<T> addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -56,7 +56,7 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery addParam(Collection<Object> objs) {
+    public SQLQuery<T> addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -68,14 +68,14 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
     }
 
     @Override
-    public SQLQuery setDataSourceName(String name) {
+    public SQLQuery<T> setDataSourceName(String name) {
         CheckConditions.checkNotNull(name, "数据源名称不能为null");
         this.dataSourceName = name;
         return this;
     }
 
     @Override
-    public SQLQuery userMaster() {
+    public SQLQuery<T> userMaster() {
         this.useMaster = true;
         return this;
     }
@@ -85,6 +85,11 @@ public class SQLQueryImpl<T> implements SQLQuery<T> {
         return JdbcSqlSelectHelper.find(clazz, sql,
                 Strings.isNullOrEmpty(dataSourceName) ? DEFULT_NAME : dataSourceName,
                 paramList, badger, useMaster);
+    }
+
+    @Override
+    public T getOne() {
+        return this.list().get(0);
     }
 
     private void initParamList() {

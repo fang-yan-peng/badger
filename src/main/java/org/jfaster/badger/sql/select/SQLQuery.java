@@ -12,33 +12,38 @@ public interface SQLQuery<T> {
     /*
      * 添加参数
      */
-    SQLQuery addParam(Object obj) ;
+    SQLQuery<T> addParam(Object obj) ;
 
     /*
      * 添加参数
      */
-    SQLQuery addParam(Object... objs) ;
+    SQLQuery<T> addParam(Object... objs) ;
 
     /*
      * 添加参数
      */
-    SQLQuery addParam(Collection<Object> objs) ;
+    SQLQuery<T> addParam(Collection<Object> objs) ;
 
     /**
      * 设置数据源名称
      * @param name
      * @return
      */
-    SQLQuery setDataSourceName(String name);
+    SQLQuery<T> setDataSourceName(String name);
 
     /**
      * 强制使用主库
      * @return
      */
-    SQLQuery userMaster();
+    SQLQuery<T> userMaster();
 
     /*
      * 返回列表
      */
     List<T> list() ;
+
+    /*
+     * 返回单个bean
+     */
+    T getOne() ;
 }

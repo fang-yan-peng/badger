@@ -45,7 +45,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Object obj)  {
+    public Query<T> addParam(Object obj)  {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -53,7 +53,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Object... objs)  {
+    public Query<T> addParam(Object... objs)  {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -65,7 +65,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query addParam(Collection<Object> objs)  {
+    public Query<T> addParam(Collection<Object> objs)  {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -77,7 +77,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query userMaster() {
+    public Query<T> userMaster() {
         this.useMaster = true;
         return this;
     }
@@ -102,15 +102,20 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query setPageSize(int pageSize) {
+    public Query<T> setPageSize(int pageSize) {
         this.pageSize = pageSize;
         return this;
     }
 
     @Override
-    public Query setPageIndex(int pageIndex) {
+    public Query<T> setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
         return this;
+    }
+
+    @Override
+    public T getOne() {
+        return list().get(0);
     }
 
     private void initParamList() {
