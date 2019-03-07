@@ -502,7 +502,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger-spring-transaction</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 <dependency>
     <groupId>org.springframework</groupId>
