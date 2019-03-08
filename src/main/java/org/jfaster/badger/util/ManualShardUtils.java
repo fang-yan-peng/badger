@@ -4,58 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jfaster.badger.Badger;
+import org.jfaster.badger.exception.BadgerException;
 import org.jfaster.badger.exception.MappingException;
 import org.jfaster.badger.query.shard.DataSourceShardStrategy;
 import org.jfaster.badger.query.shard.ShardResult;
 import org.jfaster.badger.query.shard.ShardTableInfo;
-import org.jfaster.badger.query.shard.TableInfo;
 import org.jfaster.badger.query.shard.TableShardStrategy;
 import org.jfaster.badger.sql.ParseResult;
 
 /**
- * 分库分表工具
+ * 手动分库分表工具
  * @author yanpengfang
  * create 2019-01-16 3:31 PM
  */
-public class ShardUtils {
+public class ManualShardUtils {
 
     public static ShardResult shard(Class<?> clazz, Object shardValue) {
         ShardResult res = new ShardResult();
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
         if (shardInfo == null) {
-            TableInfo tableInfo = SqlUtils.getTableInfo(clazz);
-            res.setDataSourceName(tableInfo.getDataSourceName());
-            return res;
-        }
-        String shardField = shardInfo.getFieldName();
-        String fieldName = SqlUtils.getIdFields(clazz).get(0);
-        if (!fieldName.equals(shardField)) {
-            throw new MappingException("如果通过id删除，并且带有分库分表信息，则分表字段必须是id");
+            throw new BadgerException("分库分表需要注解@ShardTable");
         }
         return shard(shardValue, shardInfo, res);
     }
 
-    public static ShardResult shard(Object o, boolean checkId) {
-        Class<?> clazz = o.getClass();
-        ShardResult res = new ShardResult();
-        ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
-        if (shardInfo == null) {
-            TableInfo tableInfo = SqlUtils.getTableInfo(clazz);
-            res.setDataSourceName(tableInfo.getDataSourceName());
-            return res;
-        }
-        String shardField = shardInfo.getFieldName();
-        if (checkId) {
-            String fieldName = SqlUtils.getIdFields(clazz).get(0);
-            if (!fieldName.equals(shardField)) {
-                throw new MappingException("如果通过id删除，并且带有分库分表信息，则分表字段必须是id");
-            }
-        }
-        Object shardValue = SqlUtils.getValueByField(o, shardField);
-        return shard(shardValue, shardInfo, res);
+    public static ShardResult shard(Object o, Object shardValue) {
+        return shard(o.getClass(), shardValue);
     }
 
-    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters, Badger badger) {
+    public static ShardResult shard(Class<?> clazz, String condition, List<Object> parameters, Object shardValue, Badger badger) {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
         ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
         List<String> conditionFields = conditionParse.getDynamicFields();
@@ -68,17 +45,13 @@ public class ShardUtils {
         ShardResult res = new ShardResult();
         res.setDynamicFields(dynamicFields);
         if (shardInfo == null) {
-            TableInfo tableInfo = SqlUtils.getTableInfo(clazz);
-            res.setDataSourceName(tableInfo.getDataSourceName());
-            return res;
+            throw new BadgerException("分库分表需要注解@ShardTable");
         }
-        int shardIndex = conditionParse.getShardParameterIndex();
-        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex)) : conditionParse.getShardValue();
         return shard(shardValue, shardInfo, res);
     }
 
     public static ShardResult shard(Class<?> clazz, String updateStatement, String condition,
-            List<Object> parameters, Badger badger) {
+            List<Object> parameters, Object shardValue, Badger badger) {
         ShardTableInfo shardInfo = SqlUtils.getShardTableInfo(clazz);
         ParseResult conditionParse = SQLParseUtils.parse(clazz, condition, badger);
         ParseResult updateParse = SQLParseUtils.parseUpdateStatement(clazz, updateStatement, badger);
@@ -97,12 +70,8 @@ public class ShardUtils {
         ShardResult res = new ShardResult();
         res.setDynamicFields(dynamicFields);
         if (shardInfo == null) {
-            TableInfo tableInfo = SqlUtils.getTableInfo(clazz);
-            res.setDataSourceName(tableInfo.getDataSourceName());
-            return res;
+            throw new BadgerException("分库分表需要注解@ShardTable");
         }
-        int shardIndex = conditionParse.getShardParameterIndex();
-        Object shardValue = shardIndex != -1 ? (parameters == null ? null : parameters.get(shardIndex + updateFields.size())) : conditionParse.getShardValue();
         return shard(shardValue, shardInfo, res);
     }
 

@@ -27,6 +27,8 @@ public class QueryImpl<T> implements Query<T> {
 
     private int pageIndex;
 
+    private Object shardValue;
+
     private boolean useMaster;
 
     private Badger badger;
@@ -45,7 +47,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query<T> addParam(Object obj)  {
+    public Query<T> addParam(Object obj) {
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -53,7 +55,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query<T> addParam(Object... objs)  {
+    public Query<T> addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -65,7 +67,7 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
-    public Query<T> addParam(Collection<Object> objs)  {
+    public Query<T> addParam(Collection<Object> objs) {
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -77,27 +79,43 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
+    public Query<T> setShardValue(Object shardValue) {
+        this.shardValue = shardValue;
+        return this;
+    }
+
+    @Override
     public Query<T> userMaster() {
         this.useMaster = true;
         return this;
     }
 
     @Override
-    public List<T> list()  {
+    public List<T> list() {
         if (Strings.isNullOrEmpty(columns)) {
             columns = "*";
         }
         if (pageSize > 0) {
+            if (shardValue != null) {
+                return JdbcSelectHelper.findByPage(clazz, columns, condition, paramList,
+                        pageIndex, pageSize, shardValue, badger, useMaster);
+            }
             return JdbcSelectHelper.findByPage(clazz, columns, condition, paramList,
                     pageIndex, pageSize, badger, useMaster);
-        } else {
-            return JdbcSelectHelper.find(clazz, columns, condition,
-                    paramList, badger, useMaster);
         }
+        if (shardValue != null) {
+            return JdbcSelectHelper.find(clazz, columns, condition,
+                    paramList, shardValue, badger, useMaster);
+        }
+        return JdbcSelectHelper.find(clazz, columns, condition,
+                paramList, badger, useMaster);
     }
 
     @Override
-    public long count()  {
+    public long count() {
+        if (shardValue != null) {
+            return JdbcSelectHelper.count(clazz, condition, paramList, shardValue, badger, useMaster);
+        }
         return JdbcSelectHelper.count(clazz, condition, paramList, badger, useMaster);
     }
 

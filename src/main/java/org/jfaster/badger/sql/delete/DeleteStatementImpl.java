@@ -11,6 +11,7 @@ public class DeleteStatementImpl implements DeleteStatement {
     private Class<?> clazz;
     private String condition;
     private List<Object> paramList = null;
+    private Object shardValue;
     private Badger badger;
 
     public DeleteStatementImpl(Class<?> clazz, String condition, Badger badger) {
@@ -58,7 +59,16 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
+    public DeleteStatement setShardValue(Object shardValue) {
+        this.shardValue = shardValue;
+        return this;
+    }
+
+    @Override
     public int execute() {
+        if (shardValue != null) {
+            return JdbcDeleteHelper.deleteByCondition(clazz, condition, paramList, shardValue, badger);
+        }
         return JdbcDeleteHelper.deleteByCondition(clazz, condition, paramList, badger);
     }
 }

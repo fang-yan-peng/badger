@@ -25,6 +25,11 @@ public interface Query<T> {
     Query<T> addParam(Collection<Object> objs);
 
     /**
+     * 手动设置分库分表字段
+     */
+    Query<T> setShardValue(Object shardValue);
+
+    /**
      * 强制使用master
      * @return
      */

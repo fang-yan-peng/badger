@@ -151,11 +151,10 @@ public class Badger extends Config {
     }
 
     /**********************************db 操作**************************************/
-
+    /**********************************保存*****************************************/
     /**
      * 保存所有字段
-     * @param t
-     * @param <T>
+     * @param t 要保存的对象
      * @return
      */
     public <T> int save(T t) {
@@ -164,8 +163,7 @@ public class Badger extends Config {
 
     /**
      * 保存所有字段 忽略唯一索引冲突
-     * @param t
-     * @param <T>
+     * @param t 要保存的对象
      * @return
      */
     public <T> int saveIgnore(T t) {
@@ -174,8 +172,7 @@ public class Badger extends Config {
 
     /**
      * 保存非空字段
-     * @param t
-     * @param <T>
+     * @param t 要保存的对象
      * @return
      */
     public <T> int saveNotNull(T t) {
@@ -184,8 +181,7 @@ public class Badger extends Config {
 
     /**
      * 保存非空字段 忽略唯一索引
-     * @param t
-     * @param <T>
+     * @param t 要保存的对象
      * @return
      */
     public <T> int saveNotNullIgnore(T t) {
@@ -193,10 +189,50 @@ public class Badger extends Config {
     }
 
     /**
+     * 指定分库分表值，保存所有字段
+     * @param t 要保存的对象
+     * @param s 分库分表字段
+     * @return
+     */
+    public <T> int save(T t, Object s) {
+        return JdbcInsertHelper.insert(t, false, s, this);
+    }
+
+    /**
+     * 指定分库分表值，保存所有字段 忽略唯一索引冲突
+     * @param t 要保存的对象
+     * @param s 分库分表字段
+     * @return
+     */
+    public <T> int saveIgnore(T t, Object s) {
+        return JdbcInsertHelper.insert(t, true, s, this);
+    }
+
+    /**
+     * 指定分库分表值，保存非空字段
+     * @param t 要保存的对象
+     * @param s 分库分表字段
+     * @return
+     */
+    public <T> int saveNotNull(T t, Object s) {
+        return JdbcInsertHelper.insertNotNull(t, false, s, this);
+    }
+
+    /**
+     * 指定分库分表值，保存非空字段 忽略唯一索引
+     * @param t 要保存的对象
+     * @param s 分库分表字段
+     * @return
+     */
+    public <T> int saveNotNullIgnore(T t, Object s) {
+        return JdbcInsertHelper.insertNotNull(t, true, s, this);
+    }
+
+    /**********************************删除*****************************************/
+    /**
      * 根据id删除
-     * @param clazz
-     * @param id
-     * @param <T>
+     * @param clazz 对象类型
+     * @param id 对象id 一般对应数据库中的id
      * @return
      */
     public <T> int delete(Class<T> clazz, Object id) {
@@ -204,20 +240,29 @@ public class Badger extends Config {
     }
 
     /**
+     * 指定分库分表值，根据id删除
+     * @param clazz 对象类型
+     * @param id 对象id 一般对应数据库中的id
+     * @param s 分库分表值
+     * @return
+     */
+    public <T> int delete(Class<T> clazz, Object id, Object s) {
+        return JdbcDeleteHelper.deleteEntity(clazz, id, s, this);
+    }
+
+    /**
      * 根据条件删除
-     * @param clazz
-     * @param condition
-     * @param <T>
+     * @param clazz 对象类型
+     * @param condition 条件
      * @return
      */
     public <T> DeleteStatement createDeteleStatement(Class<T> clazz, String condition) {
         return new DeleteStatementImpl(clazz, condition, this);
     }
-
+    /**********************************修改*****************************************/
     /**
      * 更新所有字段
-     * @param t
-     * @param <T>
+     * @param t 更新对象
      * @return
      */
     public <T> int update(T t) {
@@ -225,11 +270,20 @@ public class Badger extends Config {
     }
 
     /**
+     * 指定分库分表值，更新所有字段
+     * @param t 更新对象
+     * @param s 分库分表值
+     * @return
+     */
+    public <T> int update(T t, Object s) {
+        return JdbcUpdateHelper.updateEntity(t, s, this);
+    }
+
+    /**
      * 根据条件更新指定字段
-     * @param clazz
-     * @param updateStatement
-     * @param condition
-     * @param <T>
+     * @param clazz 对象类型
+     * @param updateStatement 更新字段
+     * @param condition 条件
      * @return
      */
     public <T> UpdateStatement createUpdateStatement(Class<T> clazz, String updateStatement, String condition) {
@@ -238,18 +292,17 @@ public class Badger extends Config {
 
     /**
      * 自定义sql
-     * @param sql
+     * @param sql 自定义sql
      * @return
      */
     public UpdateSqlStatement createUpdateSqlStatement(String sql) {
         return new UpdateSqlStatementImpl(sql, this);
     }
-
+    /**********************************查询*****************************************/
     /**
      * 根据id获取
-     * @param clazz
-     * @param id
-     * @param <T>
+     * @param clazz 对象类型
+     * @param id 对象id 一般对应数据库中的id
      * @return
      */
     public <T> T get(Class<T> clazz, Object id) {
@@ -257,11 +310,21 @@ public class Badger extends Config {
     }
 
     /**
+     * 指定分库分表值，根据id获取
+     * @param clazz 对象类型
+     * @param id 对象id 一般对应数据库中的id
+     * @param s 分库分表值
+     * @return
+     */
+    public <T> T get(Class<T> clazz, Object id, Object s) {
+        return JdbcGetHelper.get(clazz, id, s, this, false);
+    }
+
+    /**
      * 根据id获取 可以指定是否强制走主库
-     * @param clazz
-     * @param id
-     * @param useMaster
-     * @param <T>
+     * @param clazz 对象类型
+     * @param id 对象id，一般对应数据库中的id
+     * @param useMaster 是否走主库，默认走从库
      * @return
      */
     public <T> T get(Class<T> clazz, Object id, boolean useMaster) {
@@ -269,11 +332,22 @@ public class Badger extends Config {
     }
 
     /**
+     * 指定分库分表值，根据id获取 可以指定是否强制走主库
+     * @param clazz 对象类型
+     * @param id 对象id 一般对应数据库中的id
+     * @param s 分库分表值
+     * @param useMaster 是否走主库，默认走从库
+     * @return
+     */
+    public <T> T get(Class<T> clazz, Object id, Object s, boolean useMaster) {
+        return JdbcGetHelper.get(clazz, id, s, this, useMaster);
+    }
+
+    /**
      * 根据条件查询指定字段
-     * @param clazz
-     * @param columns
-     * @param condition
-     * @param <T>
+     * @param clazz 对象类型
+     * @param columns 查询的列
+     * @param condition 条件
      * @return
      */
     public <T> Query<T> createQuery(Class<T> clazz, String columns, String condition) {
@@ -282,9 +356,8 @@ public class Badger extends Config {
 
     /**
      * 根据条件查询所有字段
-     * @param clazz
-     * @param condition
-     * @param <T>
+     * @param clazz 对象类型
+     * @param condition 条件
      * @return
      */
     public <T> Query<T> createQuery(Class<T> clazz, String condition) {
@@ -293,9 +366,8 @@ public class Badger extends Config {
 
     /**
      * 自定义查询
-     * @param clazz
-     * @param sql
-     * @param <T>
+     * @param clazz 对象类型
+     * @param sql 自定义sql
      * @return
      */
     public <T> SQLQuery<T> createSqlQuery(Class<T> clazz, String sql) {

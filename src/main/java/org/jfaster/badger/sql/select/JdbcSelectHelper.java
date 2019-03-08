@@ -11,6 +11,7 @@ import org.jfaster.badger.query.shard.ShardResult;
 import org.jfaster.badger.spi.ExtensionLoader;
 import org.jfaster.badger.sql.JdbcHelper;
 import org.jfaster.badger.util.CheckConditions;
+import org.jfaster.badger.util.ManualShardUtils;
 import org.jfaster.badger.util.ShardUtils;
 
 /**
@@ -45,11 +46,49 @@ public class JdbcSelectHelper {
      * @return
      */
     public static <T> List<T> find(Class<T> clazz, String columns, String condition, List<Object> paramList, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
+        return execFind(clazz, columns, condition, paramList, shardResult, badger, useMaster);
+    }
+
+    /**
+     * 查询所有列列表
+     * @param clazz
+     * @param condition
+     * @param paramList
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> find(Class<T> clazz, String condition, List<Object> paramList,
+            Object shardValue, Badger badger, boolean useMaster) {
+        return find(clazz, "*", condition, paramList, shardValue, badger, useMaster);
+    }
+
+    /**
+     * 查询指定列列表
+     * @param clazz
+     * @param columns
+     * @param condition
+     * @param paramList
+     * @param shardValue
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> find(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, Object shardValue, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ManualShardUtils.shard(clazz, condition, paramList, shardValue, badger);
+        return execFind(clazz, columns, condition, paramList, shardResult, badger, useMaster);
+    }
+
+    private static <T> List<T> execFind(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, ShardResult shardResult, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
@@ -96,12 +135,59 @@ public class JdbcSelectHelper {
      */
     public static <T> List<T> findByPage(Class<T> clazz, String columns, String condition,
             List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
+        return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize, shardResult, badger, useMaster);
+    }
+
+    /**
+     * 分页查询指定列
+     * @param clazz
+     * @param condition
+     * @param paramList
+     * @param pageIndex
+     * @param pageSize
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> findByPage(Class<T> clazz, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            Object shardValue, Badger badger, boolean useMaster) {
+        return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, shardValue, badger, useMaster);
+    }
+
+
+    /**
+     * 分页查询指定列
+     * @param clazz
+     * @param columns
+     * @param condition
+     * @param paramList
+     * @param pageIndex
+     * @param pageSize
+     * @param shardValue
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> findByPage(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            Object shardValue, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ManualShardUtils.shard(clazz, condition, paramList, shardValue, badger);
+        return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize, shardResult, badger, useMaster);
+    }
+
+
+    private static <T> List<T> execFindByPage(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            ShardResult shardResult, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         CheckConditions.checkPageSize(pageSize, badger.getPageSizeLimit());
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList,badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();
@@ -132,9 +218,30 @@ public class JdbcSelectHelper {
      * @return
      */
     public static <T> long count(Class<T> clazz, String condition, List<Object> paramList, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
+        return execCount(clazz, condition, paramList, shardResult, badger, useMaster);
+    }
+
+    /**
+     * 根据条件count
+     * @param clazz
+     * @param condition
+     * @param paramList
+     * @param shardValue
+     * @param badger
+     * @param useMaster
+     * @param <T>
+     * @return
+     */
+    public static <T> long count(Class<T> clazz, String condition, List<Object> paramList, Object shardValue, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ManualShardUtils.shard(clazz, condition, paramList, shardValue, badger);
+        return execCount(clazz, condition, paramList, shardResult, badger, useMaster);
+    }
+
+    private static <T> long execCount(Class<T> clazz, String condition, List<Object> paramList,
+            ShardResult shardResult, Badger badger, boolean useMaster) {
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
         List<String> dynamicFields = shardResult.getDynamicFields();
         String tableName = shardResult.getTableName();
         String dbName = shardResult.getDataSourceName();

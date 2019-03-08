@@ -22,6 +22,7 @@ import org.jfaster.badger.transaction.ConnectionManager;
 import org.jfaster.badger.util.ExceptionUtils;
 import org.jfaster.badger.util.JdbcUtils;
 import org.jfaster.badger.util.Joiner;
+import org.jfaster.badger.util.ManualShardUtils;
 import org.jfaster.badger.util.ShardUtils;
 import org.jfaster.badger.util.SqlUtils;
 import org.slf4j.Logger;
@@ -56,6 +57,28 @@ public class JdbcInsertHelper {
      */
     public static int insert(Object t, boolean ignore, Badger badger) {
         return execute(t, false, ShardUtils.shard(t, false), ignore, badger);
+    }
+
+    /**
+     * 插入记录，去除非空字段
+     * @param t
+     * @param ignore
+     * @param badger
+     * @return
+             */
+    public static int insertNotNull(Object t, boolean ignore, Object shardValue ,Badger badger) {
+        return execute(t, true, ManualShardUtils.shard(t, shardValue), ignore, badger);
+    }
+
+    /**
+     * 插入所有记录
+     * @param t
+     * @param ignore
+     * @param badger
+     * @return
+     */
+    public static int insert(Object t, boolean ignore, Object shardValue ,Badger badger) {
+        return execute(t, false, ManualShardUtils.shard(t, shardValue), ignore, badger);
     }
 
     private static int execute(Object t, boolean notNull, ShardResult shardRes,
