@@ -24,6 +24,11 @@ public interface UpdateStatement {
     UpdateStatement addParam(Collection<Object> objs);
 
     /**
+     * 手动设置分库分表字段
+     */
+    UpdateStatement setShardValue(Object shardValue);
+
+    /**
      * 执行查询
      * @return
      */

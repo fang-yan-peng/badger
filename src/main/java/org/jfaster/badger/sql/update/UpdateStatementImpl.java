@@ -24,6 +24,8 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
 
     private Class<T> clazz;
 
+    private Object shardValue;
+
     public UpdateStatementImpl(Class<T> clazz, String updateStatement, String condition, Badger badger) {
         this.badger = badger;
         this.updateStatement = updateStatement;
@@ -64,7 +66,17 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
+    public UpdateStatement setShardValue(Object shardValue) {
+        this.shardValue = shardValue;
+        return this;
+    }
+
+    @Override
     public int execute() {
+        if (shardValue != null) {
+            return JdbcUpdateHelper.updateByCondition(clazz, updateStatement, condition,
+                    paramList, shardValue, badger);
+        }
         return JdbcUpdateHelper.updateByCondition(clazz, updateStatement, condition, paramList, badger);
     }
 

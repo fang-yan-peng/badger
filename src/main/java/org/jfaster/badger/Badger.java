@@ -256,7 +256,7 @@ public class Badger extends Config {
      * @param condition 条件
      * @return
      */
-    public <T> DeleteStatement createDeteleStatement(Class<T> clazz, String condition) {
+    public <T> DeleteStatement createDeleteStatement(Class<T> clazz, String condition) {
         return new DeleteStatementImpl(clazz, condition, this);
     }
     /**********************************修改*****************************************/

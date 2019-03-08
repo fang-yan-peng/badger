@@ -108,6 +108,34 @@ public class DbTest {
     }
 
     /**
+     * 插入 手动指定分库分表字段
+     */
+    @Test
+    public void insertManualShardTest() {
+        Date now = new Date();
+        Driver driver = new Driver();
+        driver.setAge(47);
+        driver.setDriverName("指定分表");
+        driver.setType(TypeEnum.SELF);
+        driver.setCreateDate(now);
+        driver.setUpdateDate(now);
+        //保存数据并且回填自增主键id
+        badger.save(driver);
+        System.out.println("司机ID:" + driver.getDriverId());
+
+        Order order = new Order();
+
+        order.setOrderNo("P22437896" + System.currentTimeMillis());
+        System.out.println("订单号:" + order.getOrderNo());
+        order.setDriverId(driver.getDriverId());
+        order.setMoney(new BigDecimal("189.02"));
+        order.setUpdateDate(now);
+        order.setCreateDate(now);
+        //忽略唯一索引冲突, 并且指定分库分表的值，会覆盖系统提取的值
+        badger.saveIgnore(order, 11);
+    }
+
+    /**
      *  根据id删除。
      */
     @Test(expected = MappingException.class)
@@ -136,7 +164,7 @@ public class DbTest {
      */
     @Test
     public void deleteByConditionTest() {
-        DeleteStatement statement = badger.createDeteleStatement(Driver.class, "type=? and age=?");
+        DeleteStatement statement = badger.createDeleteStatement(Driver.class, "type=? and age=?");
         statement.addParam(TypeEnum.JOIN);
         statement.addParam(43);
         statement.execute();
@@ -184,6 +212,18 @@ public class DbTest {
         queryIn.addParam(17).addParam(19).addParam(20);
         drivers = queryIn.list();
         System.out.println(drivers);
+    }
+
+    /**
+     * 根据条件查询，查询指定字段。
+     */
+    @Test
+    public void selectManualShardByConditionTest() {
+        //根据条件查询所有字段
+        Query<Order> query = badger.createQuery(Order.class, "order_no=?");
+        //指定分库分表字段，如果不指定查询条件必须带有driverId，因为是按照driverId分库分表，手动指定会覆盖程序提取。
+        Order order = query.addParam("P224378961552032130141").setShardValue(11).getOne();
+        System.out.println(order);
     }
 
     /**

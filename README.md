@@ -14,7 +14,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
@@ -413,6 +413,61 @@ badger.setDataSourceFactory(new SingleDataSourceFactory("db_0", dataSource));
 //指定数据源工厂名称为db_1
 badger.setDataSourceFactory(new SingleDataSourceFactory("db_1", dataSource1));
 ```
+### 手动指定分库分表
+
+> 如果使用了分库分表功能，框架会自动根据@ShardColumn获取分库分表的值，则任何db操作都必须带上分库分表字段，但是存在一些特殊情况，比如分了10张表，有一种需求是遍历这10张表，那么这样查询条件就比较麻烦了，badger支持手动指定分库分表的值，手动指定会覆盖框架提取的值。
+
+#### 增加
+
+```java
+/**
+ * 插入 手动指定分库分表字段
+ */
+@Test
+public void insertManualShardTest() {
+    Date now = new Date();
+    Driver driver = new Driver();
+    driver.setAge(47);
+    driver.setDriverName("指定分表");
+    driver.setType(TypeEnum.SELF);
+    driver.setCreateDate(now);
+    driver.setUpdateDate(now);
+    //保存数据并且回填自增主键id
+    badger.save(driver);
+    System.out.println("司机ID:" + driver.getDriverId());
+
+    Order order = new Order();
+
+    order.setOrderNo("P22437896" + System.currentTimeMillis());
+    System.out.println("订单号:" + order.getOrderNo());
+    order.setDriverId(driver.getDriverId());
+    order.setMoney(new BigDecimal("189.02"));
+    order.setUpdateDate(now);
+    order.setCreateDate(now);
+    //忽略唯一索引冲突, 并且指定分库分表的值，会覆盖系统提取的值
+    badger.saveIgnore(order, 11);
+}
+```
+
+> 只需要在保存的时候指定一个分库分表的值。同理根据id更新、查找和删除，只需要在方法里传入指定的分库分表值即可。
+
+#### 查询
+
+```java
+/**
+ * 根据条件查询，查询指定字段。
+ */
+@Test
+public void selectManualShardByConditionTest() {
+    //根据条件查询所有字段
+    Query<Order> query = badger.createQuery(Order.class, "order_no=?");
+    //指定分库分表字段，如果不指定查询条件必须带有driverId，因为是按照driverId分库分表，手动指定会覆盖程序提取。
+    Order order = query.addParam("P224378961552032130141").setShardValue(11).getOne();
+    System.out.println(order);
+}
+```
+
+> 只需要在查询的时候调用setShardValue方法指定分库分表的值即可，根据条件删除、修改也是一样。
 
 ### 读写分离
 
@@ -502,7 +557,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger-spring-transaction</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 <dependency>
     <groupId>org.springframework</groupId>
@@ -512,7 +567,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
