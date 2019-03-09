@@ -140,9 +140,9 @@ public void deleteTest() throws Exception {
 public void deleteByConditionTest() {
     DeleteStatement statement = badger.createDeteleStatement(Driver.class, 
                                                              "type=? and age=?");
-    statement.addParam(TypeEnum.JOIN);
-    statement.addParam(43);
-    statement.execute();
+    statement.addParam(TypeEnum.JOIN)
+            .addParam(43)
+            .execute();
 }
 ```
 
@@ -177,11 +177,11 @@ public void updateByConditionTest() {
     UpdateStatement statement = badger.createUpdateStatement(Order.class,
                                                              "age=?, update_date=?",
                                                              "type=? and driver_id=?");
-    statement.addParam(54);
-    statement.addParam(new Date());
-    statement.addParam(TypeEnum.SELF);
-    statement.addParam(13);//根据driver_id
-    statement.execute();
+    statement.addParam(54)
+            .addParam(new Date())
+            .addParam(TypeEnum.SELF)
+            .addParam(13) //根据driver_id
+            .execute();
 }
 ```
 
@@ -208,8 +208,7 @@ public void selectAllByConditionTest() {
     //根据条件查询所有字段
     Query<Driver> query = badger.createQuery(Driver.class, 
                                              "driver_id >=1 and driver_id <= ?");
-    query.addParam(14);
-    List<Driver> drivers = query.list();
+    List<Driver> drivers =  query.addParam(14).list();
     System.out.println(drivers);
 }
 ```
@@ -226,9 +225,9 @@ public void selectColumnsByConditionTest() {
     Query<Driver> queryDriver = badger.createQuery(Driver.class, 
                                                    "age,type", 
                                                    "type = ? and create_date < ?");
-    queryDriver.addParam(TypeEnum.SELF);
-    queryDriver.addParam(new Date()); 
-    List<Driver> drivers = queryDriver.list();
+    List<Driver> drivers = queryDriver.addParam(TypeEnum.SELF)
+               .addParam(new Date())
+               .list();
     System.out.println(drivers);
 }
 ```
@@ -240,14 +239,15 @@ public void selectColumnsByConditionTest() {
 public void selectByConditionTest() {
     //like查询
     Query<Driver> queryLike = badger.createQuery(Driver.class, "driver_name like ?");
-    queryLike.addParam("%叼蛋%");
-    List<Driver> drivers = queryLike.list();
+    List<Driver> drivers = queryLike.addParam("%叼蛋%").list();
     System.out.println(drivers);
 
     //in 查询
     Query<Driver> queryIn = badger.createQuery(Driver.class, "driver_id in (?,?,?)");
-    queryIn.addParam(17).addParam(19).addParam(20);
-    drivers = queryIn.list();
+    drivers = queryIn.addParam(17)
+                     .addParam(19)
+                     .addParam(20)
+                     .list();
     System.out.println(drivers);
 }
 ```
@@ -264,17 +264,16 @@ public void selectByPageTest() {
                                              "create_date >= ? and create_date <= ?");
     Date now = new Date();
     Date before = new Date(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(10));
-    query.addParam(before);
-    query.addParam(now);
+    query.addParam(before)
+          .addParam(now);
 
     //一共多少条
     long count = query.count();
     System.out.println("总条数:" + count);
 
-    query.setPageIndex(0);
-    query.setPageSize(10);
-
-    List<Driver> drivers = query.list();
+    List<Driver> drivers = query.setPageIndex(0)
+                                .setPageSize(10)
+                                .list();
     System.out.println(drivers);
 }
 ```
