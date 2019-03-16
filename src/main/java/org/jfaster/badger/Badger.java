@@ -23,6 +23,7 @@ import org.jfaster.badger.sql.select.Query;
 import org.jfaster.badger.sql.select.QueryImpl;
 import org.jfaster.badger.sql.select.SQLQuery;
 import org.jfaster.badger.sql.select.SQLQueryImpl;
+import org.jfaster.badger.sql.select.TypeQueryImpl;
 import org.jfaster.badger.sql.update.JdbcUpdateHelper;
 import org.jfaster.badger.sql.update.UpdateSqlStatement;
 import org.jfaster.badger.sql.update.UpdateSqlStatementImpl;
@@ -362,6 +363,27 @@ public class Badger extends Config {
      */
     public <T> Query<T> createQuery(Class<T> clazz, String condition) {
         return new QueryImpl<>(clazz, condition, this);
+    }
+
+    /**
+     * 根据条件查询指定字段
+     * @param clazz 对象类型
+     * @param columns 查询的列
+     * @param condition 条件
+     * @return
+     */
+    public <T, O> Query<O> createQuery(Class<T> clazz, Class<O> returnType, String columns, String condition) {
+        return new TypeQueryImpl<>(clazz, returnType, columns, condition, this);
+    }
+
+    /**
+     * 根据条件查询所有字段
+     * @param clazz 对象类型
+     * @param condition 条件
+     * @return
+     */
+    public <T, O> Query<O> createQuery(Class<T> clazz, Class<O> returnType, String condition) {
+        return new TypeQueryImpl<>(clazz, returnType, condition, this);
     }
 
     /**

@@ -34,6 +34,11 @@ public class JdbcSelectHelper {
         return find(clazz, "*", condition, paramList, badger, useMaster);
     }
 
+    public static <T, O> List<O> find(Class<T> clazz, String condition, List<Object> paramList,
+            Class<O> returnType, Badger badger, boolean useMaster) {
+        return find(clazz, "*", condition, paramList, returnType, badger, useMaster);
+    }
+
     /**
      * 查询指定列列表
      * @param clazz
@@ -50,6 +55,12 @@ public class JdbcSelectHelper {
         return execFind(clazz, columns, condition, paramList, shardResult, badger, useMaster);
     }
 
+    public static <T, O> List<O> find(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, Class<O> returnType, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
+        return execFind(clazz, columns, condition, paramList, shardResult, returnType, badger, useMaster);
+    }
+
     /**
      * 查询所有列列表
      * @param clazz
@@ -63,6 +74,11 @@ public class JdbcSelectHelper {
     public static <T> List<T> find(Class<T> clazz, String condition, List<Object> paramList,
             Object shardValue, Badger badger, boolean useMaster) {
         return find(clazz, "*", condition, paramList, shardValue, badger, useMaster);
+    }
+
+    public static <T, O> List<O> find(Class<T> clazz, String condition, List<Object> paramList,
+            Object shardValue, Class<O> returnType, Badger badger, boolean useMaster) {
+        return find(clazz, "*", condition, paramList, shardValue, returnType, badger, useMaster);
     }
 
     /**
@@ -83,25 +99,47 @@ public class JdbcSelectHelper {
         return execFind(clazz, columns, condition, paramList, shardResult, badger, useMaster);
     }
 
+    public static <T, O> List<O> find(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, Object shardValue, Class<O> returnType, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ManualShardUtils.shard(clazz, condition, paramList, shardValue, badger);
+        return execFind(clazz, columns, condition, paramList, shardResult, returnType, badger, useMaster);
+    }
+
     private static <T> List<T> execFind(Class<T> clazz, String columns, String condition,
             List<Object> paramList, ShardResult shardResult, Badger badger, boolean useMaster) {
+        String sql = getSql(clazz, columns, condition, shardResult.getTableName(), badger);
+        List<String> dynamicFields = shardResult.getDynamicFields();
+        String dbName = shardResult.getDataSourceName();
+        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
+                paramList, sql,
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
+    }
+
+    private static <T, O> List<O> execFind(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, ShardResult shardResult, Class<O> returnType, Badger badger, boolean useMaster) {
+        String sql = getSql(clazz, columns, condition, shardResult.getTableName(), badger);
+        List<String> dynamicFields = shardResult.getDynamicFields();
+        String dbName = shardResult.getDataSourceName();
+        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
+                paramList, sql,
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(returnType)), useMaster, true);
+    }
+
+    private static <T> String getSql(Class<T> clazz, String columns, String condition,
+            String tableName, Badger badger) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        List<String> dynamicFields = shardResult.getDynamicFields();
-        String tableName = shardResult.getTableName();
-        String dbName = shardResult.getDataSourceName();
         if (tableName == null) {
             sql.append(("*".equals(columns.trim())) ? (dialect.selectAllSql(clazz)) : (dialect.selectSql(clazz, columns)));
         } else {
             sql.append(("*".equals(columns.trim())) ? (dialect.selectAllSql(clazz, tableName)) : (dialect.selectSql(clazz, columns, tableName)));
         }
         sql.append(" WHERE ").append(condition);
-        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
-                paramList, sql.toString(),
-                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
+        return sql.toString();
     }
+
 
     /**
      * 分页查询指定列
@@ -118,6 +156,12 @@ public class JdbcSelectHelper {
     public static <T> List<T> findByPage(Class<T> clazz, String condition,
             List<Object> paramList, int pageIndex, int pageSize, Badger badger, boolean useMaster) {
         return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, badger, useMaster);
+    }
+
+    public static <T, O> List<O> findByPage(Class<T> clazz, String condition,
+            List<Object> paramList, int pageIndex, int pageSize, Class<O> returnType,
+            Badger badger, boolean useMaster) {
+        return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, returnType, badger, useMaster);
     }
 
     /**
@@ -139,6 +183,14 @@ public class JdbcSelectHelper {
         return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize, shardResult, badger, useMaster);
     }
 
+    public static <T, O> List<O> findByPage(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, int pageIndex, int pageSize, Class<O> returnType,
+            Badger badger, boolean useMaster) {
+        ShardResult shardResult = ShardUtils.shard(clazz, condition, paramList, badger);
+        return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize,
+                shardResult, returnType, badger, useMaster);
+    }
+
     /**
      * 分页查询指定列
      * @param clazz
@@ -155,6 +207,12 @@ public class JdbcSelectHelper {
             List<Object> paramList, int pageIndex, int pageSize,
             Object shardValue, Badger badger, boolean useMaster) {
         return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, shardValue, badger, useMaster);
+    }
+
+    public static <T, O> List<O> findByPage(Class<T> clazz, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            Object shardValue, Class<O> returnType, Badger badger, boolean useMaster) {
+        return findByPage(clazz, "*", condition, paramList, pageIndex, pageSize, shardValue, returnType, badger, useMaster);
     }
 
 
@@ -179,18 +237,44 @@ public class JdbcSelectHelper {
         return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize, shardResult, badger, useMaster);
     }
 
+    public static <T, O> List<O> findByPage(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            Object shardValue, Class<O> returnType, Badger badger, boolean useMaster) {
+        ShardResult shardResult = ManualShardUtils.shard(clazz, condition, paramList, shardValue, badger);
+        return execFindByPage(clazz, columns, condition, paramList, pageIndex, pageSize,
+                shardResult, returnType, badger, useMaster);
+    }
+
 
     private static <T> List<T> execFindByPage(Class<T> clazz, String columns, String condition,
             List<Object> paramList, int pageIndex, int pageSize,
             ShardResult shardResult, Badger badger, boolean useMaster) {
+        String sql = getSql(clazz, columns, condition, shardResult.getTableName(), pageIndex, pageSize, badger);
+        List<String> dynamicFields = shardResult.getDynamicFields();
+        String dbName = shardResult.getDataSourceName();
+        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
+                paramList, sql,
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
+    }
+
+    private static <T, O> List<O> execFindByPage(Class<T> clazz, String columns, String condition,
+            List<Object> paramList, int pageIndex, int pageSize,
+            ShardResult shardResult, Class<O> returnType, Badger badger, boolean useMaster) {
+        String sql = getSql(clazz, columns, condition, shardResult.getTableName(), pageIndex, pageSize, badger);
+        List<String> dynamicFields = shardResult.getDynamicFields();
+        String dbName = shardResult.getDataSourceName();
+        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
+                paramList, sql,
+                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(returnType)), useMaster, true);
+    }
+
+    private static <T> String getSql(Class<T> clazz, String columns, String condition,
+            String tableName, int pageIndex, int pageSize, Badger badger) {
         CheckConditions.checkNotNull(columns, "查询列不能为空");
         CheckConditions.checkNotNull(condition, "查询条件不能为空");
         CheckConditions.checkPageSize(pageSize, badger.getPageSizeLimit());
         StringBuilder sql = new StringBuilder();
         Dialect dialect = ExtensionLoader.get(Dialect.class).getExtension(badger.getDialect());
-        List<String> dynamicFields = shardResult.getDynamicFields();
-        String tableName = shardResult.getTableName();
-        String dbName = shardResult.getDataSourceName();
         int start = (pageIndex - 1) * pageSize;
         if (start < 0) {
             start = 0;
@@ -201,10 +285,7 @@ public class JdbcSelectHelper {
             sql.append(("*".equals(columns.trim())) ? (dialect.selectAllSql(clazz, tableName)) : (dialect.selectSql(clazz, columns, tableName)));
         }
         sql.append(" WHERE ").append(condition);
-        String resSql = dialect.getPageSql(sql.toString(), start, pageSize);
-        return JdbcHelper.executeQuery(badger, clazz, dynamicFields, dbName,
-                paramList, resSql,
-                new ListResultSetExtractor<>(RowMapplerRegistry.getRowMapper(clazz)), useMaster, true);
+        return dialect.getPageSql(sql.toString(), start, pageSize);
     }
 
     /**

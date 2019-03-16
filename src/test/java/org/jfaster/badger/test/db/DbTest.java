@@ -140,7 +140,7 @@ public class DbTest {
      */
     @Test(expected = MappingException.class)
     public void deleteTest() {
-        badger.delete(Driver.class, 3);
+        badger.delete(Driver.class, 17);
         //分库分表字段不是id则抛异常
         badger.delete(Order.class, "P224378961549863778117");
     }
@@ -150,7 +150,7 @@ public class DbTest {
      */
     @Test
     public void updateTest() {
-        Driver driver = badger.get(Driver.class, 14);
+        Driver driver = badger.get(Driver.class, 19);
         if (driver == null || driver.getDriverId() == 0) {
             return;
         }
@@ -179,8 +179,8 @@ public class DbTest {
                 "money=?, update_date=?", "order_no=? and driver_id=?");
         statement.addParam(new BigDecimal("126"));
         statement.addParam(new Date());
-        statement.addParam("P224378961549867525895");
-        statement.addParam(13);//根据driver_id分表必须带分表字段
+        statement.addParam("P224378961549892939886");
+        statement.addParam(15);//根据driver_id分表必须带分表字段
         statement.execute();
     }
 
@@ -191,7 +191,7 @@ public class DbTest {
     public void selectByConditionTest() {
         //根据条件查询所有字段
         Query<Driver> query = badger.createQuery(Driver.class, "driver_id >=1 and driver_id <= ?");
-        query.addParam(14);
+        query.addParam(30);
         List<Driver> drivers = query.list();
         System.out.println(drivers);
 
@@ -246,6 +246,26 @@ public class DbTest {
 
         List<Driver> drivers = query.list();
         System.out.println(drivers);
+    }
+
+    /**
+     * 指定查询返回的类型
+     */
+    @Test
+    public void selectType() {
+        Query<Integer> query = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id");
+        Integer avg = query.getOne();
+        System.out.println(avg);
+    }
+
+    /**
+     * 指定查询返回的类型
+     */
+    @Test
+    public void selectBeanType() {
+        Query<DriverExt> query = badger.createQuery(Driver.class, DriverExt.class,"avg(age) as avgAge, driver_id", "1=1 group by driver_id");
+        List<DriverExt> avg = query.list();
+        System.out.println(avg);
     }
 
     /**
