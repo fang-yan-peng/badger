@@ -280,16 +280,9 @@ public void selectByPageTest() {
 
 ### 指定查询返回的类型
 
+> 指定查询类型，允许自定义返回值的类型，例如返回单值等，也支持bean类型。
+
 ```java
-@Data
-public class DriverExt {
-
-    @Column(name = "avgAge")
-    int avgAge;
-
-    @Column
-    int driverId;
-}
 
 /**
  * 指定查询返回的类型
@@ -299,6 +292,16 @@ public void selectType() {
   Query<Integer> query = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id");
   Integer avg = query.getOne();
   System.out.println(avg);
+}
+
+@Data
+public class DriverExt {
+
+    @Column(name = "avgAge")
+    int avgAge;
+
+    @Column
+    int driverId;
 }
 
 /**
