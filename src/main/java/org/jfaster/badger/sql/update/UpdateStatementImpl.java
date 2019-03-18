@@ -42,6 +42,15 @@ public class UpdateStatementImpl<T> implements UpdateStatement {
     }
 
     @Override
+    public UpdateStatement addParamIfNotNull(Object obj) {
+        if (obj != null) {
+            initParamList();
+            paramList.add(obj);
+        }
+        return this;
+    }
+
+    @Override
     public UpdateStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();

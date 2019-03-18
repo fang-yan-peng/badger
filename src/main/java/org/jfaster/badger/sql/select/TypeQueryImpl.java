@@ -59,6 +59,15 @@ public class TypeQueryImpl<T, O> implements Query<O> {
     }
 
     @Override
+    public Query<O> addParamIfNotNull(Object obj) {
+        if (obj != null) {
+            initParamList();
+            paramList.add(obj);
+        }
+        return this;
+    }
+
+    @Override
     public Query<O> addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
@@ -137,7 +146,11 @@ public class TypeQueryImpl<T, O> implements Query<O> {
 
     @Override
     public O getOne() {
-        return list().get(0);
+        List<O> res = this.list();
+        if (res.isEmpty()) {
+            return null;
+        }
+        return res.get(0);
     }
 
     private void initParamList() {

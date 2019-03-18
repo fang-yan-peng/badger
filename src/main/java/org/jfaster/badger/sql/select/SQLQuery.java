@@ -17,6 +17,11 @@ public interface SQLQuery<T> {
     /*
      * 添加参数
      */
+    SQLQuery<T> addParamIfNotNull(Object obj) ;
+
+    /*
+     * 添加参数
+     */
     SQLQuery<T> addParam(Object... objs) ;
 
     /*

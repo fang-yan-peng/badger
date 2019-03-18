@@ -17,6 +17,11 @@ public interface Query<T> {
     /*
      * 添加参数
      */
+    Query<T> addParamIfNotNull(Object obj);
+
+    /*
+     * 添加参数
+     */
     Query<T> addParam(Object... objs);
 
     /*

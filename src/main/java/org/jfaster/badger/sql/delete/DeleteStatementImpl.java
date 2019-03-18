@@ -35,6 +35,15 @@ public class DeleteStatementImpl implements DeleteStatement {
     }
 
     @Override
+    public DeleteStatement addParamIfNotNull(Object obj) {
+        if (obj != null) {
+            initParamList();
+            paramList.add(obj);
+        }
+        return this;
+    }
+
+    @Override
     public DeleteStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();

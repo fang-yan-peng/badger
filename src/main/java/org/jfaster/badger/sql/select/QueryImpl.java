@@ -55,6 +55,15 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     @Override
+    public Query<T> addParamIfNotNull(Object obj) {
+        if (obj != null) {
+            initParamList();
+            paramList.add(obj);
+        }
+        return this;
+    }
+
+    @Override
     public Query<T> addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
@@ -133,7 +142,11 @@ public class QueryImpl<T> implements Query<T> {
 
     @Override
     public T getOne() {
-        return list().get(0);
+        List<T> res = this.list();
+        if (res.isEmpty()) {
+            return null;
+        }
+        return res.get(0);
     }
 
     private void initParamList() {

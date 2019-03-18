@@ -16,6 +16,11 @@ public interface UpdateStatement {
     /*
      * 添加参数
      */
+    UpdateStatement addParamIfNotNull(Object obj);
+
+    /*
+     * 添加参数
+     */
     UpdateStatement addParam(Object... objs);
 
     /*

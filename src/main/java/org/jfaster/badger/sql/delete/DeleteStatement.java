@@ -12,6 +12,11 @@ public interface DeleteStatement {
     /*
      * 添加参数
      */
+    DeleteStatement addParamIfNotNull(Object obj);
+
+    /*
+     * 添加参数
+     */
     DeleteStatement addParam(Object... objs);
 
     /*

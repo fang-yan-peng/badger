@@ -13,6 +13,13 @@ public interface UpdateSqlStatement {
      */
     UpdateSqlStatement addParam(Object obj) ;
 
+    /**
+     * 添加非空类型
+     * @param obj
+     * @return
+     */
+    UpdateSqlStatement addParamIfNotNull(Object obj) ;
+
     /*
      * 添加参数
      */

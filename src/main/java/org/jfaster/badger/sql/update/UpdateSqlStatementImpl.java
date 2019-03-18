@@ -40,6 +40,15 @@ public class UpdateSqlStatementImpl implements UpdateSqlStatement {
     }
 
     @Override
+    public UpdateSqlStatement addParamIfNotNull(Object obj) {
+        if (obj != null) {
+            initParamList();
+            paramList.add(obj);
+        }
+        return this;
+    }
+
+    @Override
     public UpdateSqlStatement addParam(Object... objs) {
         if (objs != null && objs.length > 0) {
             initParamList();
