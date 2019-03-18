@@ -481,7 +481,7 @@ public void insertManualShardTest() {
     order.setMoney(new BigDecimal("189.02"));
     order.setUpdateDate(now);
     order.setCreateDate(now);
-    //忽略唯一索引冲突, 并且指定分库分表的值，会覆盖系统提取的值
+    //忽略唯一索引冲突, 并且指定分库分表的值为11，会覆盖系统提取的值。
     badger.saveIgnore(order, 11);
 }
 ```
@@ -498,8 +498,10 @@ public void insertManualShardTest() {
 public void selectManualShardByConditionTest() {
     //根据条件查询所有字段
     Query<Order> query = badger.createQuery(Order.class, "order_no=?");
-    //指定分库分表字段，如果不指定查询条件必须带有driverId，因为是按照driverId分库分表，手动指定会覆盖程序提取。
-    Order order = query.addParam("P224378961552032130141").setShardValue(11).getOne();
+    //指定分库分表字段的值为11，如果不指定则查询条件必须带有driverId，因为是按照driverId分库分表，手动指定会覆盖程序提取。
+    Order order = query.addParam("P224378961552032130141")
+                        .setShardValue(11)
+                        .getOne();
     System.out.println(order);
 }
 ```
