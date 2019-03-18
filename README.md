@@ -14,7 +14,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 </dependency>
 ```
 
@@ -278,9 +278,43 @@ public void selectByPageTest() {
 }
 ```
 
+### 指定查询返回的类型
+
+```java
+@Data
+public class DriverExt {
+
+    @Column(name = "avgAge")
+    int avgAge;
+
+    @Column
+    int driverId;
+}
+
+/**
+ * 指定查询返回的类型
+ */
+@Test
+public void selectType() {
+  Query<Integer> query = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id");
+  Integer avg = query.getOne();
+  System.out.println(avg);
+}
+
+/**
+  * 指定查询返回的类型
+  */
+@Test
+public void selectBeanType() {
+  Query<DriverExt> query = badger.createQuery(Driver.class, DriverExt.class,"avg(age) as avgAge, driver_id", "1=1 group by driver_id");
+  List<DriverExt> avg = query.list();
+  System.out.println(avg);
+}
+```
+
 ### 扩展查询
 
-> 根据其他类定义好的表结构，进行一些操作，比如sum，min等等产生的字段，这些字段并不属于原来的表，但是是根据原来的表生成的。
+> 根据其他类定义好的表结构，进行一些操作，比如sum，min等等产生的字段，这些字段并不属于原来的表，但是是根据原来的表生成的。也可以通过上一节讲的，指定返回值类型实现。
 
 ```java
 @Data
@@ -556,7 +590,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger-spring-transaction</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 </dependency>
 <dependency>
     <groupId>org.springframework</groupId>
@@ -566,7 +600,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 </dependency>
 ```
 
