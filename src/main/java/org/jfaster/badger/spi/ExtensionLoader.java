@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jfaster.badger.cache.CacheLoader;
 import org.jfaster.badger.cache.support.DoubleCheckCache;
@@ -36,7 +35,7 @@ public class ExtensionLoader<T> {
 
     private Class<T> type;
 
-    private AtomicBoolean init = new AtomicBoolean(false);
+    private volatile boolean init = false;
 
     private ClassLoader classLoader;
 
@@ -49,18 +48,24 @@ public class ExtensionLoader<T> {
     }
 
     private ExtensionLoader(Class<T> type, ClassLoader loader) {
+        checkInterfaceType(type);
         this.type = type;
         this.classLoader = loader;
     }
 
     private void checkInit() throws ClassNotFoundException {
-        if (init.compareAndSet(false, true)) {
-            loadExtensionClasses();
+        if (init) {
+            return;
+        }
+        synchronized (this) {
+            if (!init) {
+                loadExtensionClasses();
+                init = true;
+            }
         }
     }
 
     public static <T> ExtensionLoader<T> get(Class<T> type) {
-        checkInterfaceType(type);
         return (ExtensionLoader<T>) spiClassLoaders.get(type);
     }
 
