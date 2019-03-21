@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jfaster.badger.jdbc.JdbcType;
 import org.jfaster.badger.jdbc.type.convert.NotConverter;
 import org.jfaster.badger.jdbc.type.convert.TypeConverter;
 
@@ -25,6 +26,8 @@ public @interface Column {
     String getFuncName() default "";
 
     boolean defaultValue() default false;
+
+    JdbcType jdbcType() default JdbcType.UNDEFINED;
 
     Class<? extends TypeConverter> convert() default NotConverter.class;
 }

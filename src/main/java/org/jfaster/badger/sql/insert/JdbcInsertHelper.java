@@ -112,7 +112,6 @@ public class JdbcInsertHelper {
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
-            conn = dataSource.getConnection();
             if (hasPk) {
                 ps = conn.prepareStatement(sql);
             } else {
