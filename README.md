@@ -860,3 +860,6 @@ public void updateBySelfDefine() {
 }
 ```
 
+## spring boot中使用badger
+> 请参考[https://github.com/fang-yan-peng/badger-spring-boot-starter]
+
