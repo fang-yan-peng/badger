@@ -36,6 +36,18 @@ Badger badger = Badger.newInstance(dataSource);
 
 ## 定义实体类
 
+```xml
+    CREATE TABLE `driver` (
+      `driver_id` int(11) NOT NULL AUTO_INCREMENT,
+      `driver_name` varchar(64) DEFAULT NULL,
+      `age` int(11) DEFAULT NULL,
+      `type` int(11) DEFAULT NULL,
+      `create_date` timestamp NULL DEFAULT NULL,
+      `update_date` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`driver_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
 ```java
 public enum TypeEnum {
 
@@ -345,6 +357,28 @@ System.out.println(driverExts);
 > 根据某个字段进行分库分表。如果根据某个字段进行分库分表则所有的操作必须带有分库分表字段。目前只支持单值分库分表，只要在分库分表的属性上打上@ShardColumn
 即可，框架会自动提取值调用指定的分库分表算法。
 
+```xml
+CREATE TABLE `driver_order_0` (
+  `order_no` varchar(64) DEFAULT NULL,
+  `money` decimal(10,2) DEFAULT NULL,
+  `driver_id` int(11) DEFAULT NULL,
+  `create_date` timestamp NULL DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `uniq_order_no` (`order_no`),
+  UNIQUE KEY `UK_order` (`driver_id`,`order_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `driver_order_1` (
+  `order_no` varchar(64) DEFAULT NULL,
+  `money` decimal(10,2) DEFAULT NULL,
+  `driver_id` int(11) DEFAULT NULL,
+  `create_date` timestamp NULL DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `uniq_order_no` (`order_no`),
+  UNIQUE KEY `UK_order` (`driver_id`,`order_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
 ```java
 /**
  * 分表分库
@@ -400,7 +434,7 @@ public class Order {
 
 ### 分表操作
 
-> 以插入为例，其他的操作和不分库分表的操作一样。
+> 以插入为例，其实操作和不分库分表的所有操作一样。
 
 ```java
 /**
@@ -442,7 +476,7 @@ config1.setUsername("yanpengfang");
 config1.setPassword("8888888");
 config1.setMaximumPoolSize(10);
 
-HikariDataSource dataSource1 = new HikariDataSource(config);
+HikariDataSource dataSource1 = new HikariDataSource(config1);
 
 Badger badger = Badger.newInstance();
 //指定数据源工厂名称为db_0
@@ -529,7 +563,7 @@ config1.setUsername("yanpengfang");
 config1.setPassword("88888888");
 config1.setMaximumPoolSize(10);
 
-HikariDataSource dataSource1 = new HikariDataSource(config);
+HikariDataSource dataSource1 = new HikariDataSource(config1);
 
 Badger badger = Badger.newInstance();
 badger.setDataSourceFactory(new MasterSlaveDataSourceFactory(dataSource,Collections.singletonList(dataSource1)));
