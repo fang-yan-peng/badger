@@ -854,9 +854,9 @@ public void selectBySelfDefine() {
 public void updateBySelfDefine() {
     UpdateSqlStatement sqlStatement = badger.createUpdateSqlStatement("update driver set update_date=? where driver_id=?");
     //sqlStatement.setDataSourceName("xx");如果分库需要自己指定。
-    sqlStatement.addParam(new Date());
-    sqlStatement.addParam(14);
-    sqlStatement.execute();
+    sqlStatement.addParam(new Date())
+                .addParam(14)
+                .execute();
 }
 ```
 
