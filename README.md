@@ -37,15 +37,15 @@ Badger badger = Badger.newInstance(dataSource);
 ## 定义实体类
 
 ```xml
-    CREATE TABLE `driver` (
-      `driver_id` int(11) NOT NULL AUTO_INCREMENT,
-      `driver_name` varchar(64) DEFAULT NULL,
-      `age` int(11) DEFAULT NULL,
-      `type` int(11) DEFAULT NULL,
-      `create_date` timestamp NULL DEFAULT NULL,
-      `update_date` timestamp NULL DEFAULT NULL,
-      PRIMARY KEY (`driver_id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `driver` (
+  `driver_id` int(11) NOT NULL AUTO_INCREMENT,
+  `driver_name` varchar(64) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `type` int(11) DEFAULT NULL,
+  `create_date` timestamp NULL DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`driver_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
 ```java
