@@ -611,7 +611,7 @@ public class MysqlDialect implements Dialect {
     @Override
     public String countSql(Class<?> clazz, String tableName, String condition) {
         StringBuilder sbSql = new StringBuilder("SELECT COUNT(1) FROM `");
-        sbSql.append(SqlUtils.getTableInfo(clazz).getTableName()).append("`");
+        sbSql.append(tableName).append("`");
         sbSql.append(" WHERE ").append(condition);
         return sbSql.toString();
     }

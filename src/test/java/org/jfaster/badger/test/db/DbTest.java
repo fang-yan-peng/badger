@@ -246,6 +246,9 @@ public class DbTest {
 
         List<Driver> drivers = query.list();
         System.out.println(drivers);
+
+        Query<Order> queryDriverOrder = badger.createQuery(Order.class, "driver_id=?").addParam(2).setPageIndex(0).setPageSize(10);
+        System.out.println(queryDriverOrder.count());
     }
 
     /**
@@ -253,7 +256,7 @@ public class DbTest {
      */
     @Test
     public void selectType() {
-        Query<Integer> query = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id");
+        Query<Integer> query = badger.createQuery(Driver.class, Integer.class, "avg(age)", "1=1 group by driver_id");
         Integer avg = query.getOne();
         System.out.println(avg);
     }
@@ -263,7 +266,7 @@ public class DbTest {
      */
     @Test
     public void selectBeanType() {
-        Query<DriverExt> query = badger.createQuery(Driver.class, DriverExt.class,"avg(age) as avgAge, driver_id", "1=1 group by driver_id");
+        Query<DriverExt> query = badger.createQuery(Driver.class, DriverExt.class, "avg(age) as avgAge, driver_id", "1=1 group by driver_id");
         List<DriverExt> avg = query.list();
         System.out.println(avg);
     }
