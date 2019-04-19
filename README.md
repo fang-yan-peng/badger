@@ -393,7 +393,7 @@ public void selectByLogicConditionTest() {
 }
 ```
 
-* 自定义过滤条件，如下条件相当于name="张三"，因为age的值为30所以忽略了。
+* 自定义过滤条件，如下条件相当于name="张三"，因为age的值为30小于35所以忽略了。
 
    ```java
   Condition condition = badger.createCondition()
@@ -451,6 +451,7 @@ public void selectByLogicConditionTest() {
 * and 与
 * or 或
 * like 相当于like
+* in 相当于in
 
 ## 分库分表
 
