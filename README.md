@@ -14,7 +14,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
 </dependency>
 ```
 
@@ -363,7 +363,6 @@ System.out.println(driverExts);
 public void selectByLogicConditionTest() {
   //根据条件查询所有字段
   Condition condition = badger.createCondition()
-    .and()
     .gte("driver_id", 1)
     .and()
     .lte("driver_id", 30)
@@ -386,7 +385,6 @@ public void selectByLogicConditionTest() {
   driverIds.add(10);
   driverIds.add(18);
   condition = badger.createCondition()
-    .and()
     .in("driver_id", driverIds);
   List<Driver> drivers1 = badger.createQuery(Driver.class, "name, age", condition).list();
   System.out.println(drivers1);
@@ -397,7 +395,6 @@ public void selectByLogicConditionTest() {
 
    ```java
   Condition condition = badger.createCondition()
-                  .and()
                   .eq("name", "张三")
                   .and()
                   .eq("age", 30, a-> a>35);
@@ -411,7 +408,6 @@ public void selectByLogicConditionTest() {
 @Test
 public void selectByLogicConditionTest() {
   Condition condition = badger.createCondition()
-                  .and()
                   .gte("driver_id", 1)
                   .and()
                   .lte("driver_id", 30);
@@ -424,13 +420,12 @@ public void selectByLogicConditionTest() {
 ```java
 @Test
 public void selectByLogicConditionTest() {
-  Condition condition1 = badger.createCondition()
-                .and()
+  Condition condition = badger.createCondition()
                 .eq("order_no", "P224378961549892939886")
                 .and()
                 .eq("driver_id", 15);
   badger.createUpdateStatement(Order.class,
-                               "money=?, update_date=?", condition1.getSql())
+                               "money=?, update_date=?", condition.getSql())
     .addParam(new BigDecimal("126"))
     .addParam(new Date())
     .addParam(condition1.getParams())
@@ -452,6 +447,8 @@ public void selectByLogicConditionTest() {
 * or 或
 * like 相当于like
 * in 相当于in
+* subLeft 相当于"("
+* subRight 相当于")"
 
 ## 分库分表
 
@@ -747,7 +744,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
 </dependency>
 ```
 

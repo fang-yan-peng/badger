@@ -167,9 +167,9 @@ public class DbTest {
     @Test
     public void deleteByConditionTest() {
         DeleteStatement statement = badger.createDeleteStatement(Driver.class, "type=? and age=?");
-        statement.addParam(TypeEnum.JOIN);
-        statement.addParam(43);
-        statement.execute();
+        statement.addParam(TypeEnum.JOIN)
+                .addParam(43)
+                .execute();
     }
 
     /**
@@ -179,11 +179,11 @@ public class DbTest {
     public void updateByConditionTest() {
         UpdateStatement statement = badger.createUpdateStatement(Order.class,
                 "money=?, update_date=?", "order_no=? and driver_id=?");
-        statement.addParam(new BigDecimal("126"));
-        statement.addParam(new Date());
-        statement.addParam("P224378961549892939886");
-        statement.addParam(15);//根据driver_id分表必须带分表字段
-        statement.execute();
+        statement.addParam(new BigDecimal("126"))
+                .addParam(new Date())
+                .addParam("P224378961549892939886")
+                .addParam(15) //根据driver_id分表必须带分表字段
+                .execute();
     }
 
     /**
@@ -222,7 +222,6 @@ public class DbTest {
     public void selectByLogicConditionTest() {
         //根据条件查询所有字段
         Condition condition = badger.createCondition()
-                .and()
                 .gte("driver_id", 1)
                 .and()
                 .lte("driver_id", 30);
@@ -233,16 +232,13 @@ public class DbTest {
         driverIds.add(1);
         driverIds.add(10);
         driverIds.add(18);
-        condition = badger.createCondition()
-                .and()
-                .in("driver_id", driverIds);
+        condition = badger.createCondition().in("driver_id", driverIds);
         badger.createDeleteStatement(Driver.class, condition).execute();
         //in 查询
         List<Driver> drivers1 = badger.createQuery(Driver.class, condition).list();
         System.out.println(drivers1);
 
         Condition condition1 = badger.createCondition()
-                .and()
                 .eq("order_no", "P224378961549892939886")
                 .and()
                 .eq("driver_id", 15);

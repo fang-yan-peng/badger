@@ -21,7 +21,6 @@ public class ConditionTest {
         adds.add("北京");
         adds.add("上海");
         String cond = condition
-                .and()
                 .eq("name", "张三")
                 .and()
                 .gt("age", 11)
@@ -45,7 +44,6 @@ public class ConditionTest {
         adds.add("北京");
         adds.add("上海");
         String cond = condition
-                .or()
                 .eq("name", "张三")
                 .or()
                 .gt("age", 11)
@@ -62,7 +60,7 @@ public class ConditionTest {
     @Test
     public void cond3() {
         Condition condition = new ConditionImpl();
-        String cond = condition.and().eq("name", 2).groupBy("name", "age").getSql();
+        String cond = condition.eq("name", 2).groupBy("name", "age").getSql();
         System.out.println(cond);
     }
 
@@ -76,7 +74,7 @@ public class ConditionTest {
     @Test
     public void cond5() {
         Condition condition = new ConditionImpl();
-        String cond = condition.and().eq("name", "张三").and().eq("age", 10, a -> a > 15).getSql();
+        String cond = condition.eq("name", "张三").and().eq("age", 10, a -> a > 15).getSql();
         System.out.println(cond);
     }
 }
