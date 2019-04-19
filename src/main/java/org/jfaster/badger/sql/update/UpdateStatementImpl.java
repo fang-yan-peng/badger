@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jfaster.badger.Badger;
+import org.jfaster.badger.sql.select.Condition;
 import org.jfaster.badger.util.CheckConditions;
 
 /**

@@ -33,6 +33,8 @@ public class QueryImpl<T> implements Query<T> {
 
     private Badger badger;
 
+    private Condition logicCondition;
+
     public QueryImpl(Class<T> clazz, String condition, Badger badger) {
         this.condition = condition;
         this.clazz = clazz;
@@ -46,8 +48,24 @@ public class QueryImpl<T> implements Query<T> {
         this.badger = badger;
     }
 
+    public QueryImpl(Class<T> clazz, Condition condition, Badger badger) {
+        this.logicCondition = condition;
+        this.clazz = clazz;
+        this.badger = badger;
+    }
+
+    public QueryImpl(Class<T> clazz, String columns, Condition condition, Badger badger) {
+        this.logicCondition = condition;
+        this.clazz = clazz;
+        this.columns = columns;
+        this.badger = badger;
+    }
+
     @Override
     public Query<T> addParam(Object obj) {
+        if (logicCondition != null) {
+            return this;
+        }
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -56,6 +74,9 @@ public class QueryImpl<T> implements Query<T> {
 
     @Override
     public Query<T> addParamIfNotNull(Object obj) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (obj != null) {
             initParamList();
             paramList.add(obj);
@@ -65,6 +86,9 @@ public class QueryImpl<T> implements Query<T> {
 
     @Override
     public Query<T> addParam(Object... objs) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -77,6 +101,9 @@ public class QueryImpl<T> implements Query<T> {
 
     @Override
     public Query<T> addParam(Collection<Object> objs) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -103,6 +130,10 @@ public class QueryImpl<T> implements Query<T> {
     public List<T> list() {
         if (Strings.isNullOrEmpty(columns)) {
             columns = "*";
+        }
+        if (logicCondition != null) {
+            paramList = logicCondition.getParams();
+            condition = logicCondition.getSql();
         }
         if (pageSize > 0) {
             if (shardValue != null) {

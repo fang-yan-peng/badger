@@ -1,6 +1,7 @@
 package org.jfaster.badger.test.db;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ import org.jfaster.badger.Badger;
 import org.jfaster.badger.exception.MappingException;
 import org.jfaster.badger.sql.delete.DeleteStatement;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
+import org.jfaster.badger.sql.select.Condition;
 import org.jfaster.badger.sql.select.Query;
 import org.jfaster.badger.sql.select.SQLQuery;
 import org.jfaster.badger.sql.update.UpdateSqlStatement;
@@ -212,6 +214,44 @@ public class DbTest {
         queryIn.addParam(17).addParam(19).addParam(20);
         drivers = queryIn.list();
         System.out.println(drivers);
+
+
+    }
+
+    @Test
+    public void selectByLogicConditionTest() {
+        //根据条件查询所有字段
+        Condition condition = badger.createCondition()
+                .and()
+                .gte("driver_id", 1)
+                .and()
+                .lte("driver_id", 30);
+        List<Driver> drivers = badger.createQuery(Driver.class, condition).list();
+        System.out.println(drivers);
+
+        List<Integer> driverIds = new ArrayList<>();
+        driverIds.add(1);
+        driverIds.add(10);
+        driverIds.add(18);
+        condition = badger.createCondition()
+                .and()
+                .in("driver_id", driverIds);
+        badger.createDeleteStatement(Driver.class, condition).execute();
+        //in 查询
+        List<Driver> drivers1 = badger.createQuery(Driver.class, condition).list();
+        System.out.println(drivers1);
+
+        Condition condition1 = badger.createCondition()
+                .and()
+                .eq("order_no", "P224378961549892939886")
+                .and()
+                .eq("driver_id", 15);
+        badger.createUpdateStatement(Order.class,
+                "money=?, update_date=?", condition1.getSql())
+                .addParam(new BigDecimal("126"))
+                .addParam(new Date())
+                .addParam(condition1.getParams())
+                .execute();
     }
 
     /**

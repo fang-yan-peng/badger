@@ -14,7 +14,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
 </dependency>
 ```
 
@@ -352,6 +352,106 @@ List<DriverExt> driverExts = query.list();
 System.out.println(driverExts);
 ```
 
+## 条件
+
+> 查询、删除、修改时条件可以直接传入，也可以动态的构建，例如动态条件，根据不同参数条件不同。不过静态sql也可以使用。条件会自动跳过参数为null的字段，也可以自定义判断条件。
+
+* 下面条件的例子相当于driver_id >=1 and driver_id <=30 忽略name, 因为值null。查询所有字段。
+
+```java
+@Test
+public void selectByLogicConditionTest() {
+  //根据条件查询所有字段
+  Condition condition = badger.createCondition()
+    .and()
+    .gte("driver_id", 1)
+    .and()
+    .lte("driver_id", 30)
+    .and()
+    .eq("name", null);
+  //
+  List<Driver> drivers = badger.createQuery(Driver.class, condition).list();
+  System.out.println(drivers);
+}
+```
+
+* 下面条件的例子相当于driver_id in(1,10,18)，只查询name和age字段。
+
+```java
+@Test
+public void selectByLogicConditionTest() {
+  //根据条件查询所有字段
+  List<Integer> driverIds = new ArrayList<>();
+  driverIds.add(1);
+  driverIds.add(10);
+  driverIds.add(18);
+  condition = badger.createCondition()
+    .and()
+    .in("driver_id", driverIds);
+  List<Driver> drivers1 = badger.createQuery(Driver.class, "name, age", condition).list();
+  System.out.println(drivers1);
+}
+```
+
+* 自定义过滤条件，如下条件相当于name="张三"，因为age的值为30所以忽略了。
+
+   ```java
+  Condition condition = badger.createCondition()
+                  .and()
+                  .eq("name", "张三")
+                  .and()
+                  .eq("age", 30, a-> a>35);
+   ```
+
+  
+
+* 根据条件删除
+
+```java
+@Test
+public void selectByLogicConditionTest() {
+  Condition condition = badger.createCondition()
+                  .and()
+                  .gte("driver_id", 1)
+                  .and()
+                  .lte("driver_id", 30);
+  badger.createDeleteStatement(Driver.class, condition).execute();
+}
+```
+
+* 根据条件修改指定字段 
+
+```java
+@Test
+public void selectByLogicConditionTest() {
+  Condition condition1 = badger.createCondition()
+                .and()
+                .eq("order_no", "P224378961549892939886")
+                .and()
+                .eq("driver_id", 15);
+  badger.createUpdateStatement(Order.class,
+                               "money=?, update_date=?", condition1.getSql())
+    .addParam(new BigDecimal("126"))
+    .addParam(new Date())
+    .addParam(condition1.getParams())
+    .execute();
+}
+```
+
+
+
+* eq 等于
+* gt 大于
+* gte 大于等于
+* lt 小于
+* lte 小于等于
+* groupBy 相当于group by
+* orderByAsc 升序排序
+* orderByDesc 降序排序
+* and 与
+* or 或
+* like 相当于like
+
 ## 分库分表
 
 > 根据某个字段进行分库分表。如果根据某个字段进行分库分表则所有的操作必须带有分库分表字段。目前只支持单值分库分表，只要在分库分表的属性上打上@ShardColumn
@@ -578,7 +678,7 @@ badger.setDataSourceFactory(new MasterSlaveDataSourceFactory(dataSource,Collecti
  */
 @Test
 public void updateTest() {
-    Driver driver = badger.get(Driver.class, 14, true);
+    Driver driver = badger.getFromMaster(Driver.class, 14);
     System.out.println(driver);
 }
 ```
@@ -631,6 +731,12 @@ public void transactionTest() {
     <groupId>org.jfaster</groupId>
     <artifactId>badger-spring-transaction</artifactId>
     <version>1.7</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.jfaster</groupId>
+            <artifactId>badger</artifactId>
+        </exclusion>
+    </exclusions>
 </dependency>
 <dependency>
     <groupId>org.springframework</groupId>
@@ -640,7 +746,7 @@ public void transactionTest() {
 <dependency>
     <groupId>org.jfaster</groupId>
     <artifactId>badger</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
 </dependency>
 ```
 

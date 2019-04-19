@@ -35,6 +35,8 @@ public class TypeQueryImpl<T, O> implements Query<O> {
 
     private Badger badger;
 
+    private Condition logicCondition;
+
     public TypeQueryImpl(Class<T> clazz, Class<O> returnType, String condition, Badger badger) {
         this.condition = condition;
         this.clazz = clazz;
@@ -50,8 +52,26 @@ public class TypeQueryImpl<T, O> implements Query<O> {
         this.badger = badger;
     }
 
+    public TypeQueryImpl(Class<T> clazz, Class<O> returnType, Condition condition, Badger badger) {
+        this.logicCondition = condition;
+        this.clazz = clazz;
+        this.returnType = returnType;
+        this.badger = badger;
+    }
+
+    public TypeQueryImpl(Class<T> clazz, Class<O> returnType, String columns, Condition condition, Badger badger) {
+        this.logicCondition = condition;
+        this.clazz = clazz;
+        this.returnType = returnType;
+        this.columns = columns;
+        this.badger = badger;
+    }
+
     @Override
     public Query<O> addParam(Object obj) {
+        if (logicCondition != null) {
+            return this;
+        }
         CheckConditions.checkNotNull(obj);
         initParamList();
         paramList.add(obj);
@@ -60,6 +80,9 @@ public class TypeQueryImpl<T, O> implements Query<O> {
 
     @Override
     public Query<O> addParamIfNotNull(Object obj) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (obj != null) {
             initParamList();
             paramList.add(obj);
@@ -69,6 +92,9 @@ public class TypeQueryImpl<T, O> implements Query<O> {
 
     @Override
     public Query<O> addParam(Object... objs) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (objs != null && objs.length > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -81,6 +107,9 @@ public class TypeQueryImpl<T, O> implements Query<O> {
 
     @Override
     public Query<O> addParam(Collection<Object> objs) {
+        if (logicCondition != null) {
+            return this;
+        }
         if (objs != null && objs.size() > 0) {
             initParamList();
             for (Object obj : objs) {
@@ -107,6 +136,10 @@ public class TypeQueryImpl<T, O> implements Query<O> {
     public List<O> list() {
         if (Strings.isNullOrEmpty(columns)) {
             columns = "*";
+        }
+        if (logicCondition != null) {
+            paramList = logicCondition.getParams();
+            condition = logicCondition.getSql();
         }
         if (pageSize > 0) {
             if (shardValue != null) {

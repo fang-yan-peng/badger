@@ -19,6 +19,8 @@ import org.jfaster.badger.sql.delete.JdbcDeleteHelper;
 import org.jfaster.badger.sql.get.JdbcGetHelper;
 import org.jfaster.badger.sql.insert.JdbcInsertHelper;
 import org.jfaster.badger.sql.interceptor.SqlInterceptor;
+import org.jfaster.badger.sql.select.Condition;
+import org.jfaster.badger.sql.select.ConditionImpl;
 import org.jfaster.badger.sql.select.Query;
 import org.jfaster.badger.sql.select.QueryImpl;
 import org.jfaster.badger.sql.select.SQLQuery;
@@ -260,6 +262,18 @@ public class Badger extends Config {
     public <T> DeleteStatement createDeleteStatement(Class<T> clazz, String condition) {
         return new DeleteStatementImpl(clazz, condition, this);
     }
+
+    /**
+     * 根据条件删除
+     * @param clazz 对象类型
+     * @param condition 条件
+     * @return
+     */
+    public <T> DeleteStatement createDeleteStatement(Class<T> clazz, Condition condition) {
+        return new DeleteStatementImpl(clazz, condition, this);
+    }
+
+
     /**********************************修改*****************************************/
     /**
      * 更新所有字段
@@ -325,11 +339,10 @@ public class Badger extends Config {
      * 根据id获取 可以指定是否强制走主库
      * @param clazz 对象类型
      * @param id 对象id，一般对应数据库中的id
-     * @param useMaster 是否走主库，默认走从库
      * @return
      */
-    public <T> T get(Class<T> clazz, Object id, boolean useMaster) {
-        return JdbcGetHelper.get(clazz, id, this, useMaster);
+    public <T> T getFromMaster(Class<T> clazz, Object id) {
+        return JdbcGetHelper.get(clazz, id, this, true);
     }
 
     /**
@@ -337,11 +350,10 @@ public class Badger extends Config {
      * @param clazz 对象类型
      * @param id 对象id 一般对应数据库中的id
      * @param s 分库分表值
-     * @param useMaster 是否走主库，默认走从库
      * @return
      */
-    public <T> T get(Class<T> clazz, Object id, Object s, boolean useMaster) {
-        return JdbcGetHelper.get(clazz, id, s, this, useMaster);
+    public <T> T getFromMaster(Class<T> clazz, Object id, Object s) {
+        return JdbcGetHelper.get(clazz, id, s, this, true);
     }
 
     /**
@@ -387,6 +399,48 @@ public class Badger extends Config {
     }
 
     /**
+     * 根据条件查询指定字段
+     * @param clazz 对象类型
+     * @param columns 查询的列
+     * @param condition 条件
+     * @return
+     */
+    public <T> Query<T> createQuery(Class<T> clazz, String columns, Condition condition) {
+        return new QueryImpl<>(clazz, columns, condition, this);
+    }
+
+    /**
+     * 根据条件查询所有字段
+     * @param clazz 对象类型
+     * @param condition 条件
+     * @return
+     */
+    public <T> Query<T> createQuery(Class<T> clazz, Condition condition) {
+        return new QueryImpl<>(clazz, condition, this);
+    }
+
+    /**
+     * 根据条件查询指定字段
+     * @param clazz 对象类型
+     * @param columns 查询的列
+     * @param condition 条件
+     * @return
+     */
+    public <T, O> Query<O> createQuery(Class<T> clazz, Class<O> returnType, String columns, Condition condition) {
+        return new TypeQueryImpl<>(clazz, returnType, columns, condition, this);
+    }
+
+    /**
+     * 根据条件查询所有字段
+     * @param clazz 对象类型
+     * @param condition 条件
+     * @return
+     */
+    public <T, O> Query<O> createQuery(Class<T> clazz, Class<O> returnType, Condition condition) {
+        return new TypeQueryImpl<>(clazz, returnType, condition, this);
+    }
+
+    /**
      * 自定义查询
      * @param clazz 对象类型
      * @param sql 自定义sql
@@ -394,6 +448,11 @@ public class Badger extends Config {
      */
     public <T> SQLQuery<T> createSqlQuery(Class<T> clazz, String sql) {
         return new SQLQueryImpl<>(sql, this, clazz);
+    }
+
+    /**************************************动态条件******************************************/
+    public Condition createCondition() {
+        return new ConditionImpl();
     }
 
     /**

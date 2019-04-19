@@ -1,0 +1,203 @@
+package org.jfaster.badger.sql.select;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * sql条件
+ * @author yanpengfang
+ * create 2019-04-19 5:32 PM
+ */
+public class ConditionImpl implements Condition {
+
+    private StringBuilder sqlBuilder = new StringBuilder("1=1");
+
+    private List<Object> params = new ArrayList<>();
+
+    @Override
+    public <T> Condition gt(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" > ?");
+            params.add(param);
+        }
+        return this;
+    }
+
+    @Override
+    public <T> Condition eq(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" = ?");
+            params.add(param);
+        }
+        return this;
+    }
+
+    @Override
+    public <T> Condition gte(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" >= ?");
+            params.add(param);
+        }
+        return this;
+
+    }
+
+    @Override
+    public <T> Condition lt(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" < ?");
+            params.add(param);
+        }
+        return this;
+
+    }
+
+    @Override
+    public <T> Condition lte(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" <= ?");
+            params.add(param);
+        }
+        return this;
+
+    }
+
+    @Override
+    public <T> Condition like(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" like ?");
+            params.add(param);
+        }
+        return this;
+
+    }
+
+    //##################################################
+
+    @Override
+    public <T> Condition gt(String column, T param) {
+        return this.gt(column, param, Objects::nonNull);
+    }
+
+    @Override
+    public <T> Condition gte(String column, T param) {
+        return this.gte(column, param, Objects::nonNull);
+
+    }
+
+    @Override
+    public <T> Condition lt(String column, T param) {
+        return this.lt(column, param, Objects::nonNull);
+
+    }
+
+    @Override
+    public <T> Condition lte(String column, T param) {
+        return this.lte(column, param, Objects::nonNull);
+
+    }
+
+    @Override
+    public <T> Condition like(String column, T param) {
+        return this.like(column, param, Objects::nonNull);
+    }
+
+    @Override
+    public <T> Condition eq(String column, T param) {
+        return this.eq(column, param, Objects::nonNull);
+    }
+
+    //###################################################################
+
+    @Override
+    public <T> Condition in(String column, Collection<T> param) {
+        if (param != null && !param.isEmpty()) {
+            sqlBuilder.append(" ").append(column).append(" in(?");
+            Iterator<T> it = param.iterator();
+            if (it.hasNext()) {
+                params.add(it.next());
+            }
+            while (it.hasNext()) {
+                sqlBuilder.append(",?");
+                params.add(it.next());
+            }
+            sqlBuilder.append(")");
+        }
+        return this;
+    }
+
+    @Override
+    public Condition subLeft() {
+        sqlBuilder.append(" (");
+        return this;
+    }
+
+    @Override
+    public Condition subRight() {
+        sqlBuilder.append(" )");
+        return this;
+    }
+
+    @Override
+    public Condition and() {
+        sqlBuilder.append(" and");
+        return this;
+    }
+
+    @Override
+    public Condition or() {
+        sqlBuilder.append(" or");
+        return this;
+    }
+
+    @Override
+    public Condition groupBy(String... column) {
+        if (column == null || column.length == 0) {
+            return this;
+        }
+        sqlBuilder.append(" group by ").append(column[0]);
+        for (int i = 1; i < column.length; ++i) {
+            sqlBuilder.append(",").append(column[i]);
+        }
+        return this;
+    }
+
+    @Override
+    public Condition orderByAsc(String... column) {
+        if (column == null || column.length == 0) {
+            return this;
+        }
+        sqlBuilder.append(" order by ").append(column[0]);
+        for (int i = 1; i < column.length; ++i) {
+            sqlBuilder.append(",").append(column[i]);
+        }
+        sqlBuilder.append(" asc");
+        return this;
+    }
+
+    @Override
+    public Condition orderByDesc(String... column) {
+        if (column == null || column.length == 0) {
+            return this;
+        }
+        sqlBuilder.append(" order by ").append(column[0]);
+        for (int i = 1; i < column.length; ++i) {
+            sqlBuilder.append(",").append(column[i]);
+        }
+        sqlBuilder.append(" desc");
+        return this;
+    }
+
+    @Override
+    public String getSql() {
+        return sqlBuilder.toString();
+    }
+
+    @Override
+    public List<Object> getParams() {
+        return params;
+    }
+}
