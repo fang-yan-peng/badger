@@ -258,7 +258,7 @@ public void selectByConditionTest() {
 
     //in 查询
     drivers = badger.createQuery(Driver.class, "driver_id in (?,?,?)")
-    								.addParam(17)
+    .addParam(17)
                     .addParam(19)
                     .addParam(20)
                     .list();
