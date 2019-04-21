@@ -220,8 +220,8 @@ public void selectAllByConditionTest() {
     //根据条件查询所有字段
     List<Driver> drivers = badger.createQuery(Driver.class, 
                                              "driver_id >=1 and driver_id <= ?")
-      														.addParam(14)
-      														.list();
+      									.addParam(14)
+      									.list();
     System.out.println(drivers);
 }
 ```
