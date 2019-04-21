@@ -218,9 +218,10 @@ public void selectTest() {
 @Test
 public void selectAllByConditionTest() {
     //根据条件查询所有字段
-    Query<Driver> query = badger.createQuery(Driver.class, 
-                                             "driver_id >=1 and driver_id <= ?");
-    List<Driver> drivers =  query.addParam(14).list();
+    List<Driver> drivers = badger.createQuery(Driver.class, 
+                                             "driver_id >=1 and driver_id <= ?")
+      														.addParam(14)
+      														.list();
     System.out.println(drivers);
 }
 ```
@@ -250,16 +251,17 @@ public void selectColumnsByConditionTest() {
 @Test
 public void selectByConditionTest() {
     //like查询
-    Query<Driver> queryLike = badger.createQuery(Driver.class, "driver_name like ?");
-    List<Driver> drivers = queryLike.addParam("%叼蛋%").list();
+    List<Driver> drivers = badger.createQuery(Driver.class, "driver_name like ?")
+                                 .addParam("%叼蛋%")
+                                 .list();
     System.out.println(drivers);
 
     //in 查询
-    Query<Driver> queryIn = badger.createQuery(Driver.class, "driver_id in (?,?,?)");
-    drivers = queryIn.addParam(17)
-                     .addParam(19)
-                     .addParam(20)
-                     .list();
+    drivers = badger.createQuery(Driver.class, "driver_id in (?,?,?)")
+    								.addParam(17)
+                    .addParam(19)
+                    .addParam(20)
+                    .list();
     System.out.println(drivers);
 }
 ```
@@ -272,20 +274,20 @@ public void selectByConditionTest() {
  */
 @Test
 public void selectByPageTest() {
-    Query<Driver> query = badger.createQuery(Driver.class, 
-                                             "create_date >= ? and create_date <= ?");
     Date now = new Date();
     Date before = new Date(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(10));
-    query.addParam(before)
-          .addParam(now);
+    Query<Driver> query = badger.createQuery(Driver.class, 
+                                             "create_date >= ? and create_date <= ?")
+                                .addParam(before)
+                                .addParam(now);
+                                .setPageIndex(0) //相当于limit 0,10
+                                .setPageSize(10)
 
     //一共多少条
     long count = query.count();
     System.out.println("总条数:" + count);
 
-    List<Driver> drivers = query.setPageIndex(0)
-                                .setPageSize(10)
-                                .list();
+    List<Driver> drivers = query.list();
     System.out.println(drivers);
 }
 ```
@@ -301,8 +303,7 @@ public void selectByPageTest() {
  */
 @Test
 public void selectType() {
-  Query<Integer> query = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id");
-  Integer avg = query.getOne();
+  Integer avg = badger.createQuery(Driver.class, Integer.class,"avg(age)", "1=1 group by driver_id").getOne();
   System.out.println(avg);
 }
 
@@ -321,8 +322,7 @@ public class DriverExt {
   */
 @Test
 public void selectBeanType() {
-  Query<DriverExt> query = badger.createQuery(Driver.class, DriverExt.class,"avg(age) as avgAge, driver_id", "1=1 group by driver_id");
-  List<DriverExt> avg = query.list();
+  List<DriverExt> avg = badger.createQuery(Driver.class, DriverExt.class,"avg(age) as avgAge, driver_id", "1=1 group by driver_id").list();
   System.out.println(avg);
 }
 ```
@@ -354,7 +354,7 @@ System.out.println(driverExts);
 
 ## 条件
 
-> 查询、删除、修改时条件可以直接传入，也可以动态的构建，例如动态条件，根据不同参数条件不同。不过静态sql也可以使用。条件会自动跳过参数为null的字段，也可以自定义判断条件。
+> 查询、删除、修改时条件可以直接传入，也可以动态的构建，例如动态条件，根据不同参数条件不同。静态条件也可以使用。条件会自动跳过参数为null的字段，也可以自定义判断条件。
 
 * 下面条件的例子相当于driver_id >=1 and driver_id <=30 忽略name, 因为值null。查询所有字段。
 
@@ -398,7 +398,7 @@ public void selectByLogicConditionTest() {
                   .eq("name", "张三")
                   .and()
                   .eq("age", 30, a-> a>35);
-   ```
+  ```
 
   
 
@@ -428,7 +428,7 @@ public void selectByLogicConditionTest() {
                                "money=?, update_date=?", condition.getSql())
     .addParam(new BigDecimal("126"))
     .addParam(new Date())
-    .addParam(condition1.getParams())
+    .addParam(condition.getParams())
     .execute();
 }
 ```
@@ -453,7 +453,7 @@ public void selectByLogicConditionTest() {
 ## 分库分表
 
 > 根据某个字段进行分库分表。如果根据某个字段进行分库分表则所有的操作必须带有分库分表字段。目前只支持单值分库分表，只要在分库分表的属性上打上@ShardColumn
-即可，框架会自动提取值调用指定的分库分表算法。
+> 即可，框架会自动提取值调用指定的分库分表算法。
 
 ```xml
 CREATE TABLE `driver_order_0` (
@@ -476,6 +476,8 @@ CREATE TABLE `driver_order_1` (
   UNIQUE KEY `UK_order` (`driver_id`,`order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
+
+> ShardTable注解指定此表是需要分库或者分表的。其中tableShardStrategy是指定分表策略，实现TableShardStrategy接口；dbShardStrategy是指定分库策略，实现DatasourceShardStrategy接口。两种可以同时存在也可以只存在其一。下面的例子是把分库策略暂时注释掉，只实现分表功能，分库功能会在后续演示。
 
 ```java
 /**
@@ -532,7 +534,7 @@ public class Order {
 
 ### 分表操作
 
-> 以插入为例，其实操作和不分库分表的所有操作一样。
+> 以插入为例。所有的操作都和不分表的操作一样，直接使用即可，分库分表的动作都由框架层实现，用户只需要指定自己的分库分表算法即可。
 
 ```java
 /**
@@ -555,7 +557,7 @@ public void insertTest() {
 
 ### 分库操作
 
-> 按照如下配置Badger，然后将Order中的注释打开，就可以实现分库了。分库和分表可以同时使用，也可以只使用其中之一。
+> 按照如下配置Badger，然后将上一节中定义的Order类中的分库策略注释打开，就可以实现分库了。分库和分表可以同时使用，也可以只使用其中之一。实现分库算法时，根据业务需要返回在badger中事先注册好的连接池的名称即可。例如下面的例子，注册了两个连接池，名字分别叫db_0和db_1。
 
 ```java
 HikariConfig config = new HikariConfig();
@@ -688,10 +690,11 @@ public void updateTest() {
 @Test
 public void selectByConditionTest() {
     //根据条件查询所有字段
-    Query<Driver> query = badger.createQuery(Driver.class, 
-                                             "driver_id >=1 and driver_id <= ?");
-    query.addParam(14);
-    List<Driver> drivers = query.userMaster().list();
+    List<Driver> driver = badger.createQuery(Driver.class, 
+                                             "driver_id >=1 and driver_id <= ?")
+      .addParam(14)
+      .userMaster()
+      .list();
     System.out.println(drivers);
 }
 
@@ -719,7 +722,7 @@ public void transactionTest() {
 
 ### 使用spring提供的事务管理器
 
-> 使用spring的事务管理器，同时支持spring的事务传递机制。
+> 使用spring的事务管理器，同时支持spring的事务传递机制。springboot同样可以使用。
 
 ### 添加依赖
 
@@ -965,5 +968,8 @@ public void updateBySelfDefine() {
 ```
 
 ## Badger为spring boot提供了插件，方便在spring boot中使用
+
+插件只需要简单配置即可，不用再手动初始化Badger实例了，插件会根据配置自动生成Badger类。
+
 > 请参考[https://github.com/fang-yan-peng/badger-spring-boot-starter]
 
