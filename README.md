@@ -438,6 +438,7 @@ public void selectByLogicConditionTest() {
 
 
 * eq 等于
+* ne 不等于
 * gt 大于
 * gte 大于等于
 * lt 小于
