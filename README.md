@@ -269,7 +269,7 @@ public void selectByConditionTest() {
 ```
 
 ### 分页查询
-
+> 分页查询的pageIndex从1开始，1，2，3....
 ```java
 /**
  * 分页查询
@@ -282,7 +282,7 @@ public void selectByPageTest() {
                                              "create_date >= ? and create_date <= ?")
                                 .addParam(before)
                                 .addParam(now);
-                                .setPageIndex(0) //相当于limit 0,10
+                                .setPageIndex(1) //相当于limit 0,10
                                 .setPageSize(10)
 
     //一共多少条
