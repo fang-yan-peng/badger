@@ -247,6 +247,8 @@ public void selectColumnsByConditionTest() {
 
 ### like和in查询
 
+> in 查询可以使用后面介绍的Condition，省去了自己拼接逗号。
+
 ```java
 @Test
 public void selectByConditionTest() {
@@ -354,7 +356,7 @@ System.out.println(driverExts);
 
 ## 条件
 
-> 查询、删除、修改时条件可以直接传入，也可以动态的构建，例如动态条件，根据不同参数条件不同。静态条件也可以使用。条件会自动跳过参数为null的字段，也可以自定义判断条件。
+> 查询、删除、修改时条件可以直接传入，也可以动态的构建。此功能比较适合于动态条件和in查询，根据不同参数条件不同。静态条件也可以使用。Condition会自动跳过参数为null的字段，也可以自定义判断条件。
 
 * 下面条件的例子相当于driver_id >=1 and driver_id <=30 忽略name, 因为值null。查询所有字段。
 
@@ -384,8 +386,8 @@ public void selectByLogicConditionTest() {
   driverIds.add(1);
   driverIds.add(10);
   driverIds.add(18);
-  condition = badger.createCondition()
-    .in("driver_id", driverIds);
+  
+  condition = badger.createCondition().in("driver_id", driverIds);
   List<Driver> drivers1 = badger.createQuery(Driver.class, "name, age", condition).list();
   System.out.println(drivers1);
 }
