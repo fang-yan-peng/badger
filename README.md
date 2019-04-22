@@ -20,7 +20,7 @@ Badger轻量级单表操作dao框架，提供分库分表，类型映射等功�
 
 
 
-## 实例化，以使用myql和HikariCp连接池为例
+## 实例化，以使用mysql和HikariCp连接池为例
 
 ```java
 HikariConfig config = new HikariConfig();
