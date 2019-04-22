@@ -224,6 +224,9 @@ public class ConditionImpl implements Condition {
 
     @Override
     public String getSql() {
+        if (sqlBuilder.length() == 0) {
+            return " 1=1";
+        }
         return sqlBuilder.toString();
     }
 
