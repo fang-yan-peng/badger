@@ -20,7 +20,7 @@ public class BadgerSqlParserTest {
 
     @Test
     public void parse() throws Exception{
-		String expression = "1=1 and (state!=1 And money<>9.0) Or name='ddd' aNd status in (1,2,3) or create_time between '2016-01-01' and '2017-01-01' and addr lIke '%中国%' and addr is null and addr is not null";
+		String expression = "1=1 and (state!=1 And `money`<>9.0) Or name='ddd' aNd status in (1,2,3) or create_time between '2016-01-01' and '2017-01-01' and addr lIke '%中国%' and addr is null and addr is not null";
         //String expression = "1=1 and driver_tel = 15575919419 and ext like '2017-04%' and ext>='2017-04-04' and ext <= '2017-04-11' and work_time > 0";
         InputStream is = new ByteArrayInputStream(expression.getBytes());
         CharStream cs = CharStreams.fromStream(is);

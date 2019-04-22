@@ -26,7 +26,7 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition gt(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` > ?");
+            sqlBuilder.append(" ").append(column).append(" > ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
@@ -37,7 +37,7 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition eq(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` = ?");
+            sqlBuilder.append(" ").append(column).append(" = ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
@@ -48,7 +48,7 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition gte(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` >= ?");
+            sqlBuilder.append(" ").append(column).append(" >= ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
@@ -60,7 +60,7 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition lt(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` < ?");
+            sqlBuilder.append(" ").append(column).append(" < ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
@@ -72,7 +72,7 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition lte(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` <= ?");
+            sqlBuilder.append(" ").append(column).append(" <= ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
@@ -84,13 +84,24 @@ public class ConditionImpl implements Condition {
     @Override
     public <T> Condition like(String column, T param, Predict<T> predict) {
         if (predict.apply(param)) {
-            sqlBuilder.append(" `").append(column).append("` like ?");
+            sqlBuilder.append(" ").append(column).append(" like ?");
             params.add(param);
         } else if (last != null) {
             sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
         }
         return this;
 
+    }
+
+    @Override
+    public <T> Condition ne(String column, T param, Predict<T> predict) {
+        if (predict.apply(param)) {
+            sqlBuilder.append(" ").append(column).append(" != ?");
+            params.add(param);
+        } else if (last != null) {
+            sqlBuilder.delete(sqlBuilder.length() - last.length(), sqlBuilder.length());
+        }
+        return this;
     }
 
     //##################################################
@@ -128,12 +139,17 @@ public class ConditionImpl implements Condition {
         return this.eq(column, param, Objects::nonNull);
     }
 
+    @Override
+    public <T> Condition ne(String column, T param) {
+        return this.ne(column, param, Objects::nonNull);
+    }
+
     //###################################################################
 
     @Override
     public <T> Condition in(String column, Collection<T> param) {
         if (param != null && !param.isEmpty()) {
-            sqlBuilder.append(" `").append(column).append("` in(?");
+            sqlBuilder.append(" ").append(column).append(" in(?");
             Iterator<T> it = param.iterator();
             if (it.hasNext()) {
                 params.add(it.next());
@@ -163,6 +179,9 @@ public class ConditionImpl implements Condition {
 
     @Override
     public Condition and() {
+        if (sqlBuilder.length() == 0) {
+            sqlBuilder.append("1=1");
+        }
         sqlBuilder.append(AND);
         last = AND;
         return this;
@@ -170,6 +189,9 @@ public class ConditionImpl implements Condition {
 
     @Override
     public Condition or() {
+        if (sqlBuilder.length() == 0) {
+            sqlBuilder.append("1=1");
+        }
         sqlBuilder.append(OR);
         last = OR;
         return this;
@@ -181,11 +203,11 @@ public class ConditionImpl implements Condition {
             return this;
         }
         if (sqlBuilder.length() == 0) {
-            sqlBuilder.append(" 1=1");
+            sqlBuilder.append("1=1");
         }
-        sqlBuilder.append(" group by `").append(column[0]).append("`");
+        sqlBuilder.append(" group by ").append(column[0]);
         for (int i = 1; i < column.length; ++i) {
-            sqlBuilder.append(",`").append(column[i]).append("`");
+            sqlBuilder.append(",").append(column[i]);
         }
         return this;
     }
@@ -196,11 +218,11 @@ public class ConditionImpl implements Condition {
             return this;
         }
         if (sqlBuilder.length() == 0) {
-            sqlBuilder.append(" 1=1");
+            sqlBuilder.append("1=1");
         }
-        sqlBuilder.append(" order by `").append(column[0]).append("`");
+        sqlBuilder.append(" order by ").append(column[0]);
         for (int i = 1; i < column.length; ++i) {
-            sqlBuilder.append(",`").append(column[i]).append("`");
+            sqlBuilder.append(",").append(column[i]);
         }
         sqlBuilder.append(" asc");
         return this;
@@ -214,9 +236,9 @@ public class ConditionImpl implements Condition {
         if (sqlBuilder.length() == 0) {
             sqlBuilder.append(" 1=1");
         }
-        sqlBuilder.append(" order by `").append(column[0]).append("`");
+        sqlBuilder.append(" order by ").append(column[0]);
         for (int i = 1; i < column.length; ++i) {
-            sqlBuilder.append(",`").append(column[i]).append("`");
+            sqlBuilder.append(",").append(column[i]);
         }
         sqlBuilder.append(" desc");
         return this;

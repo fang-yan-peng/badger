@@ -30,6 +30,8 @@ public interface Condition {
 
     <T> Condition like(String column, T param, Predict<T> predict);
 
+    <T> Condition ne(String column, T param, Predict<T> predict);
+
 
     //##################################################
 
@@ -45,6 +47,8 @@ public interface Condition {
     <T> Condition like(String column, T param);
 
     <T> Condition eq(String column, T param);
+
+    <T> Condition ne(String column, T param);
 
     //###################################################################
 
