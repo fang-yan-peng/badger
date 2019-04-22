@@ -153,6 +153,10 @@ public class QueryImpl<T> implements Query<T> {
 
     @Override
     public long count() {
+        if (logicCondition != null) {
+            paramList = logicCondition.getParams();
+            condition = logicCondition.getSql();
+        }
         if (shardValue != null) {
             return JdbcSelectHelper.count(clazz, condition, paramList, shardValue, badger, useMaster);
         }
