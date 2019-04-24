@@ -155,6 +155,9 @@ public void deleteByConditionTest() {
     statement.addParam(TypeEnum.JOIN)
             .addParam(43)
             .execute();
+  
+    //也可以简化写成如下，因为addParam提供了多个重载方法。
+    badger.createDeteleStatement(Driver.class, "type=? and age=?").addParam(TypeEnum.JOIN,43).execute();
 }
 ```
 
@@ -194,6 +197,11 @@ public void updateByConditionTest() {
             .addParam(TypeEnum.SELF)
             .addParam(13) //根据driver_id
             .execute();
+  
+    //简化写法
+    badger.createUpdateStatement(Order.class,"age=?, update_date=?",
+                                 "type=? and driver_id=?")
+      .addParam(54,new Date(),TypeEnum.SELF,13).execute();
 }
 ```
 
@@ -241,6 +249,10 @@ public void selectColumnsByConditionTest() {
     List<Driver> drivers = queryDriver.addParam(TypeEnum.SELF)
                .addParam(new Date())
                .list();
+    //简化写法
+    List<Driver> drivers = badger.createQuery(Driver.class, "age,type", 
+                                              "type = ? and create_date < ?")
+      .addParam(TypeEnum.SELF,new Date()).list();
     System.out.println(drivers);
 }
 ```
