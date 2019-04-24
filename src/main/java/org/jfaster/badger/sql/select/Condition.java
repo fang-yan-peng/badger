@@ -75,4 +75,6 @@ public interface Condition {
 
     Condition orderByDesc(String... column);
 
+    Condition orderBy(OrderByColumn... columns);
+
 }

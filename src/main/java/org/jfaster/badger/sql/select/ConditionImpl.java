@@ -21,6 +21,10 @@ public class ConditionImpl implements Condition {
 
     private static final String AND = " and";
 
+    private static final String DESC = " desc";
+
+    private static final String ASC = " asc";
+
     private String last;
 
     @Override
@@ -220,11 +224,10 @@ public class ConditionImpl implements Condition {
         if (sqlBuilder.length() == 0) {
             sqlBuilder.append("1=1");
         }
-        sqlBuilder.append(" order by ").append(column[0]);
+        sqlBuilder.append(" order by ").append(column[0]).append(ASC);
         for (int i = 1; i < column.length; ++i) {
-            sqlBuilder.append(",").append(column[i]);
+            sqlBuilder.append(",").append(column[i]).append(ASC);
         }
-        sqlBuilder.append(" asc");
         return this;
     }
 
@@ -236,11 +239,25 @@ public class ConditionImpl implements Condition {
         if (sqlBuilder.length() == 0) {
             sqlBuilder.append(" 1=1");
         }
-        sqlBuilder.append(" order by ").append(column[0]);
+        sqlBuilder.append(" order by ").append(column[0]).append(DESC);
         for (int i = 1; i < column.length; ++i) {
-            sqlBuilder.append(",").append(column[i]);
+            sqlBuilder.append(",").append(column[i]).append(DESC);
         }
-        sqlBuilder.append(" desc");
+        return this;
+    }
+
+    @Override
+    public Condition orderBy(OrderByColumn... columns) {
+        if (columns == null || columns.length == 0) {
+            return this;
+        }
+        if (sqlBuilder.length() == 0) {
+            sqlBuilder.append(" 1=1");
+        }
+        sqlBuilder.append(" order by ").append(columns[0].orderColumn());
+        for (int i = 1; i < columns.length; ++i) {
+            sqlBuilder.append(",").append(columns[i].orderColumn());
+        }
         return this;
     }
 

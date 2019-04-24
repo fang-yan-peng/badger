@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jfaster.badger.sql.select.Condition;
 import org.jfaster.badger.sql.select.ConditionImpl;
+import org.jfaster.badger.sql.select.OrderByColumn;
 import org.junit.Test;
 
 /**
@@ -75,6 +76,18 @@ public class ConditionTest {
     public void cond5() {
         Condition condition = new ConditionImpl();
         String cond = condition.eq("name", "张三").and().eq("age", 10, a -> a > 15).getSql();
+        System.out.println(cond);
+    }
+
+    @Test
+    public void cond6() {
+        Condition condition = new ConditionImpl();
+        String cond = condition
+                .eq("name", "张三")
+                .and()
+                .eq("age", 10, a -> a > 15)
+                .orderBy(OrderByColumn.asc("name"), OrderByColumn.desc("age"))
+                .getSql();
         System.out.println(cond);
     }
 }
