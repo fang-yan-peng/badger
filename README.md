@@ -199,9 +199,7 @@ public void updateByConditionTest() {
             .execute();
   
     //简化写法
-    badger.createUpdateStatement(Order.class,"age=?, update_date=?",
-                                 "type=? and driver_id=?")
-      .addParam(54,new Date(),TypeEnum.SELF,13).execute();
+    badger.createUpdateStatement(Order.class,"age=?, update_date=?","type=? and driver_id=?").addParam(54,new Date(),TypeEnum.SELF,13).execute();
 }
 ```
 
@@ -250,9 +248,7 @@ public void selectColumnsByConditionTest() {
                .addParam(new Date())
                .list();
     //简化写法
-    List<Driver> drivers = badger.createQuery(Driver.class, "age,type", 
-                                              "type = ? and create_date < ?")
-      .addParam(TypeEnum.SELF,new Date()).list();
+    List<Driver> drivers = badger.createQuery(Driver.class, "age,type", "type = ? and create_date < ?").addParam(TypeEnum.SELF,new Date()).list();
     System.out.println(drivers);
 }
 ```
