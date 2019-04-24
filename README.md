@@ -454,8 +454,9 @@ public void selectByLogicConditionTest() {
 * lt 小于
 * lte 小于等于
 * groupBy 相当于group by
-* orderByAsc 升序排序
-* orderByDesc 降序排序
+* orderByAsc 升序排序，如果是多个字段排序如condition.orderByAsc(col1,col2)，相当于 order by col1 asc, col2 asc
+* orderByDesc 降序排序，如果是多个字段如condition.orderByDesc(col1,col2)，相当于order by col1 desc, col2 desc
+* orderBy 可以为每个列指定排序规则，如condition.orderBy(OrderByColumn.asc("col1"), OrderByColumn.desc("col2"))，相当于order by col1 asc, col2 desc
 * and 与
 * or 或
 * like 相当于like
