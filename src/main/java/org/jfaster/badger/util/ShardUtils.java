@@ -48,7 +48,7 @@ public class ShardUtils {
         if (checkId) {
             String fieldName = SqlUtils.getIdFields(clazz).get(0);
             if (!fieldName.equals(shardField)) {
-                throw new MappingException("如果通过id删除，并且带有分库分表信息，则分表字段必须是id");
+                throw new MappingException("如果通过id对表进行操作，并且带有分库分表信息，则分表字段必须是id");
             }
         }
         Object shardValue = SqlUtils.getValueByField(o, shardField);

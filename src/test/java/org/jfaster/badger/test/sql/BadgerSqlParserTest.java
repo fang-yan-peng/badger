@@ -36,7 +36,7 @@ public class BadgerSqlParserTest {
 
     @Test
     public void parseUpdateStatement() throws Exception{
-        String expression = "age=1,name='cat',address='中国',type=?";
+        String expression = "age=1,name='cat',address='中国',type=type - ?";
         //String expression = "1=1 and driver_tel = 15575919419 and ext like '2017-04%' and ext>='2017-04-04' and ext <= '2017-04-11' and work_time > 0";
         InputStream is = new ByteArrayInputStream(expression.getBytes());
         CharStream cs = CharStreams.fromStream(is);
